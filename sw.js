@@ -6,7 +6,7 @@
  *
  * Bump VERSION on every deploy that changes index.html.
  */
-const VERSION = "gp-v7";
+const VERSION = "gp-v8";
 const SHELL = ["./", "./index.html", "./assets/logo.png"];
 
 self.addEventListener("install", e => {
@@ -53,6 +53,7 @@ self.addEventListener("fetch", e => {
       .catch(() => caches.match(req).then(hit => hit || caches.match("./index.html")))
   );
 });
+
 
 
 
