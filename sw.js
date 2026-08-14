@@ -1,4 +1,4 @@
-﻿/* Go Picadera service worker.
+/* Go Picadera service worker.
  *
  * Deliberately network-first for the page itself: a menu site must never serve
  * a stale price from cache. The cache exists only so the app still opens if the
@@ -6,7 +6,7 @@
  *
  * Bump VERSION on every deploy that changes index.html.
  */
-const VERSION = "gp-v10";
+const VERSION = "gp-v12";
 const SHELL = ["./", "./index.html", "./assets/logo.png"];
 
 self.addEventListener("install", e => {
