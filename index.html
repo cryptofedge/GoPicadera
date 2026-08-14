@@ -504,12 +504,28 @@ input,select{ font:inherit; }
   background:var(--yellow); color:#0A0B0E;
 }
 .badge.party{ background:var(--ember); color:#fff; }
-.tile-body{ padding:13px 14px 14px; display:flex; flex-direction:column; gap:4px; flex:1; }
-.tile-name{ font-size:.92rem; font-weight:600; line-height:1.3; }
-.tile-foot{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:auto; padding-top:10px; }
-.tile-foot .price{ font-size:1.15rem; }
-.tile-foot .add-btn{ width:34px; height:34px; }
-.tile-foot .add-btn svg{ width:16px; height:16px; }
+.tile-body{ padding:10px 12px 11px; display:flex; flex-direction:column; gap:2px; flex:1; }
+/* Clamping the name to a fixed two-line box makes every card in a row settle
+   at the same height, so `margin-top:auto` stops opening a dead gap above the
+   price on short-named dishes. */
+.tile-name{
+  /* h3 carries a 1em UA margin top AND bottom -- ~26px of dead air per card */
+  margin:0;
+  font-size:.88rem; font-weight:600; line-height:1.25;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
+  overflow:hidden; min-height:2.5em;
+}
+.tile-foot{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:auto; padding-top:7px; }
+.tile-foot .price{ font-size:1.1rem; }
+.tile-foot .add-btn{ width:32px; height:32px; }
+.tile-foot .add-btn svg{ width:15px; height:15px; }
+.tile .tags{ margin-top:3px; }
+.tile .tag-pill{ font-size:.58rem; padding:2px 6px; }
+@media (max-width:520px){
+  .tile-body{ padding:9px 10px 10px; }
+  .tile-name{ font-size:.83rem; min-height:2.4em; }
+  .tile-foot .price{ font-size:1rem; }
+}
 
 .menu-empty{ text-align:center; padding:56px 20px; color:var(--muted); }
 .menu-empty strong{ display:block; font-size:1.1rem; color:var(--text); margin-bottom:6px; }
