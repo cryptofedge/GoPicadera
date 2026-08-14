@@ -7,9 +7,123 @@
 <title>Go Picadera — Sabor de RD, Flow de BK | Comida dominicana en Brooklyn</title>
 <meta name="description" content="Comida rápida dominicana en Brooklyn. Pica pollo, chimis, yaroas, mofongos y los tres golpes. Ordena directo en 4820 4th Ave — entrega gratis, 4.9★ en Google.">
 
+<!-- ==========================================================================
+     SHARE PREVIEW
+     Without these, a link pasted into WhatsApp or an Instagram DM renders as a
+     bare URL. For a business whose marketing is social, that's a real leak.
+     TODO on launch: swap the absolute URLs below to https://gopicadera.com
+     ========================================================================== -->
+<link rel="canonical" href="https://gopicadera-preview.netlify.app/">
+<meta property="og:type" content="restaurant">
+<meta property="og:site_name" content="Go Picadera">
+<meta property="og:locale" content="es_US">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:title" content="Go Picadera — Sabor de RD, Flow de BK">
+<meta property="og:description" content="Picadera dominicana de verdad en la 4th Ave. Chimis, yaroas, mofongos y pica pollo. Entrega gratis en Brooklyn · 4.9★ en Google.">
+<meta property="og:url" content="https://gopicadera-preview.netlify.app/">
+<meta property="og:image" content="https://gopicadera-preview.netlify.app/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Go Picadera — hamburguesa especial dominicana en Brooklyn">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Go Picadera — Sabor de RD, Flow de BK">
+<meta name="twitter:description" content="Picadera dominicana en Brooklyn. Entrega gratis · 4.9★ en Google.">
+<meta name="twitter:image" content="https://gopicadera-preview.netlify.app/og.jpg">
+
+<!-- Add to Home Screen -->
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="Go Picadera">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- ==========================================================================
+     STRUCTURED DATA
+     Lets Google show the rating, hours, price range and address directly in
+     search results, and qualifies the listing for the "Order Online" action.
+     Highest-leverage SEO item for a business fighting for local search.
+     Hours here must match the HOURS array in the script below.
+     ========================================================================== -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Restaurant",
+  "@id": "https://gopicadera.com/#restaurant",
+  "name": "Go Picadera",
+  "description": "Comida rápida dominicana en Brooklyn: pica pollo, chimis, yaroas, mofongos, empanadas y los tres golpes.",
+  "url": "https://gopicadera.com/",
+  "telephone": "+1-347-463-9911",
+  "image": "https://gopicadera-preview.netlify.app/og.jpg",
+  "servesCuisine": ["Dominican", "Caribbean", "Latin American"],
+  "priceRange": "$$",
+  "currenciesAccepted": "USD",
+  "acceptsReservations": "False",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "4820 4th Ave",
+    "addressLocality": "Brooklyn",
+    "addressRegion": "NY",
+    "postalCode": "11220",
+    "addressCountry": "US"
+  },
+  "geo": { "@type": "GeoCoordinates", "latitude": 40.6473562, "longitude": -74.0121317 },
+  "hasMap": "https://maps.app.goo.gl/SNAppMPNgKArDF377",
+  "sameAs": [
+    "https://www.instagram.com/gopicadera/",
+    "https://www.tiktok.com/@gopicadera",
+    "https://www.doordash.com/store/go-picadera-brooklyn-35709129/"
+  ],
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.9",
+    "reviewCount": "84",
+    "bestRating": "5"
+  },
+  "openingHoursSpecification": [
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Sunday","Monday","Tuesday","Wednesday","Thursday"], "opens": "11:00", "closes": "23:00" },
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Friday","Saturday"], "opens": "11:00", "closes": "01:00" }
+  ],
+  "hasMenu": {
+    "@type": "Menu",
+    "name": "Menú Go Picadera",
+    "inLanguage": "es",
+    "hasMenuSection": [
+      { "@type": "MenuSection", "name": "Desayuno", "hasMenuItem": [
+        { "@type": "MenuItem", "name": "Los Tres Golpes", "offers": { "@type": "Offer", "price": "8.99", "priceCurrency": "USD" } },
+        { "@type": "MenuItem", "name": "Empanadas", "offers": { "@type": "Offer", "price": "3.00", "priceCurrency": "USD" } },
+        { "@type": "MenuItem", "name": "Kipes", "offers": { "@type": "Offer", "price": "2.99", "priceCurrency": "USD" } }
+      ]},
+      { "@type": "MenuSection", "name": "Sándwiches", "hasMenuItem": [
+        { "@type": "MenuItem", "name": "Chimi Dominicano", "offers": { "@type": "Offer", "price": "10.99", "priceCurrency": "USD" } },
+        { "@type": "MenuItem", "name": "Special Burger", "offers": { "@type": "Offer", "price": "15.99", "priceCurrency": "USD" } },
+        { "@type": "MenuItem", "name": "Hot Dog Dominicano", "offers": { "@type": "Offer", "price": "9.99", "priceCurrency": "USD" } },
+        { "@type": "MenuItem", "name": "Cuban Sandwich", "offers": { "@type": "Offer", "price": "13.99", "priceCurrency": "USD" } }
+      ]},
+      { "@type": "MenuSection", "name": "Mofongos" },
+      { "@type": "MenuSection", "name": "Órdenes" },
+      { "@type": "MenuSection", "name": "Yaroas" },
+      { "@type": "MenuSection", "name": "Ensaladas" },
+      { "@type": "MenuSection", "name": "Acompañantes" },
+      { "@type": "MenuSection", "name": "Jugos Naturales" },
+      { "@type": "MenuSection", "name": "Bebidas" }
+    ]
+  },
+  "potentialAction": {
+    "@type": "OrderAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": "https://gopicadera.com/menu",
+      "inLanguage": "es",
+      "actionPlatform": ["http://schema.org/DesktopWebPlatform","http://schema.org/IOSPlatform","http://schema.org/AndroidPlatform"]
+    },
+    "deliveryMethod": ["http://purl.org/goodrelations/v1#DeliveryModeOwnFleet","http://purl.org/goodrelations/v1#DeliveryModePickUp"]
+  }
+}
+</script>
 
 <style>
 /* ==========================================================================
@@ -580,6 +694,90 @@ input,select{ font:inherit; }
   .toast{ animation:none; }
 }
 
+/* ==========================================================================
+   DIETARY TAGS
+   ========================================================================== */
+.diet-row{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:10px; }
+.diet-row .lbl{ font-size:.76rem; color:var(--faint); margin-right:2px; }
+.dchip{
+  padding:6px 13px; border-radius:100px; border:1px solid var(--line);
+  font-size:.76rem; font-weight:600; color:var(--muted); white-space:nowrap;
+  transition:background .2s, color .2s, border-color .2s;
+}
+.dchip[aria-pressed="true"]{ background:var(--surface-3); color:var(--text); border-color:var(--line-warm); }
+.tags{ display:flex; gap:5px; flex-wrap:wrap; margin-top:6px; }
+.tag-pill{
+  font-size:.63rem; font-weight:700; letter-spacing:.05em; text-transform:uppercase;
+  padding:3px 8px; border-radius:100px; border:1px solid var(--line); color:var(--muted);
+}
+.tag-pill.cerdo{ color:#FF9E7A; border-color:rgba(255,106,26,.3); }
+.tag-pill.mariscos{ color:#7ACBFF; border-color:rgba(122,203,255,.28); }
+.tag-pill.sincarne{ color:var(--green); border-color:rgba(63,208,122,.3); }
+.diet-note{ font-size:.73rem; color:var(--faint); margin:14px 0 0; max-width:66ch; }
+
+/* ==========================================================================
+   LIGHTBOX
+   ========================================================================== */
+.lightbox{
+  position:fixed; inset:0; z-index:99; background:rgba(4,5,7,.94);
+  display:grid; place-items:center; opacity:0; pointer-events:none; transition:opacity .3s;
+  padding:24px;
+}
+.lightbox.on{ opacity:1; pointer-events:auto; }
+.lightbox img{ max-width:min(1100px,92vw); max-height:82vh; border-radius:14px; object-fit:contain; }
+.lb-cap{
+  position:absolute; left:0; right:0; bottom:26px; text-align:center;
+  font-family:var(--font-display); font-variation-settings:'wdth' 110,'wght' 800;
+  font-size:1.15rem; text-transform:uppercase; letter-spacing:.02em;
+}
+.lb-cap span{ display:block; font-family:var(--font-body); font-size:.85rem; font-weight:600; color:var(--yellow); text-transform:none; letter-spacing:0; margin-top:5px; }
+.lb-btn{
+  position:absolute; top:50%; transform:translateY(-50%);
+  width:48px; height:48px; border-radius:50%; background:rgba(255,255,255,.1);
+  backdrop-filter:blur(8px); display:grid; place-items:center; transition:background .2s;
+}
+.lb-btn:hover{ background:var(--yellow); color:#0A0B0E; }
+.lb-prev{ left:20px; } .lb-next{ right:20px; }
+.lb-close{ position:absolute; top:20px; right:20px; width:44px; height:44px; border-radius:50%; background:rgba(255,255,255,.1); backdrop-filter:blur(8px); display:grid; place-items:center; }
+@media (max-width:640px){ .lb-btn{ width:40px; height:40px; } .lb-prev{ left:8px; } .lb-next{ right:8px; } }
+
+/* ==========================================================================
+   CLOSED NOTICE + ORDER AGAIN
+   ========================================================================== */
+.notice{
+  display:flex; gap:11px; align-items:flex-start;
+  background:rgba(255,106,26,.1); border:1px solid rgba(255,106,26,.32);
+  border-radius:14px; padding:13px 15px; font-size:.84rem; line-height:1.5;
+}
+.notice svg{ flex:none; color:var(--ember); margin-top:2px; }
+.notice strong{ display:block; color:var(--text); margin-bottom:2px; }
+.notice span{ color:var(--muted); }
+
+.again{
+  display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+  background:var(--surface); border:1px solid var(--line-warm);
+  border-radius:var(--radius); padding:16px 18px; margin-bottom:22px;
+}
+.again-body{ flex:1; min-width:180px; }
+.again-title{ font-weight:700; font-size:.95rem; }
+.again-items{ font-size:.82rem; color:var(--muted); margin-top:2px; }
+
+/* ==========================================================================
+   CATERING QUOTE FORM
+   ========================================================================== */
+.quote-grid-form{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px; }
+.field{ display:grid; gap:6px; }
+.field label{ font-size:.76rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--faint); }
+.field input,.field select,.field textarea{
+  background:var(--ink); border:1px solid var(--line); border-radius:12px;
+  padding:12px 14px; color:var(--text); font-size:.92rem; width:100%; transition:border-color .2s;
+}
+.field textarea{ resize:vertical; min-height:78px; font-family:inherit; }
+.field input:focus,.field select:focus,.field textarea:focus{ border-color:var(--yellow); outline:none; }
+.field.full{ grid-column:1 / -1; }
+.field select option{ background:var(--surface); }
+@media (max-width:520px){ .quote-grid-form{ grid-template-columns:1fr; } }
+
 .mobile-bar{
   display:none; position:fixed; left:0; right:0; bottom:0; z-index:60;
   background:rgba(10,11,14,.92); backdrop-filter:blur(16px);
@@ -720,14 +918,20 @@ input,select{ font:inherit; }
         <input id="menu-search" type="search" placeholder="Buscar: chimi, mofongo, tostones…" autocomplete="off">
       </div>
       <div class="chips" id="chips" role="group" aria-label="Categorías"></div>
+      <div class="diet-row" id="diet-row" role="group" aria-label="Filtros de ingredientes"></div>
     </div>
 
+    <div id="again-slot"></div>
     <p class="menu-count" id="menu-count"></p>
     <div class="menu-grid" id="menu-grid"></div>
     <div class="menu-empty" id="menu-empty" hidden>
       <strong data-i18n="menu.emptyTitle">Nada por aquí</strong>
       <span data-i18n="menu.emptyBody">Prueba con otra palabra o vuelve a “Todo”.</span>
     </div>
+
+    <!-- Tags come from the restaurant's own dish descriptions. This is not an
+         allergen guarantee and the disclaimer says so plainly. -->
+    <p class="diet-note" data-i18n="diet.note">Las etiquetas son informativas y se basan en la descripción de cada plato. La cocina usa freidoras y superficies compartidas, así que no podemos garantizar la ausencia de alérgenos. Si tienes una alergia, escríbenos antes de ordenar.</p>
   </div>
 </section>
 
@@ -750,7 +954,7 @@ input,select{ font:inherit; }
           </div>
           <span class="price">$89.99</span>
         </div>
-        <a href="https://wa.me/19297058086" class="btn btn-primary" style="width:fit-content" data-i18n="cat.cta">Cotizar por WhatsApp</a>
+        <button class="btn btn-primary" style="width:fit-content" id="quote-open" data-i18n="cat.cta">Cotizar por WhatsApp</button>
       </div>
     </div>
   </div>
@@ -908,6 +1112,12 @@ input,select{ font:inherit; }
   </div>
   <div class="cart-items" id="cart-items"></div>
   <div class="cart-foot" id="cart-foot" hidden>
+    <!-- Shown only when the kitchen is closed: the old build let you send an
+         order into the void at 3 AM with no warning. -->
+    <div class="notice" id="closed-notice" hidden>
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      <div><strong id="closed-title"></strong><span id="closed-body"></span></div>
+    </div>
     <div class="mode-toggle" role="group" aria-label="Entrega o recogida">
       <button data-mode="delivery" aria-pressed="true" data-i18n="cart.delivery">Entrega</button>
       <button data-mode="pickup" aria-pressed="false" data-i18n="cart.pickup">Recoger</button>
@@ -922,6 +1132,55 @@ input,select{ font:inherit; }
     <p class="cart-note" data-i18n="cart.note">Te confirmamos por WhatsApp antes de cocinar.</p>
   </div>
 </aside>
+
+<!-- Catering quote builder: composes a structured WhatsApp message instead of
+     dropping the customer into an empty chat. -->
+<div class="modal" id="quote" role="dialog" aria-modal="true" aria-labelledby="quote-title">
+  <button class="modal-close" id="quote-close" aria-label="Cerrar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+  <div class="modal-body">
+    <span class="tag">Catering</span>
+    <h3 id="quote-title" data-i18n="quote.title">Pide tu cotización</h3>
+    <p class="modal-desc" data-i18n="quote.sub">Cuéntanos lo básico y te mandamos precio por WhatsApp.</p>
+    <form id="quote-form">
+      <div class="quote-grid-form">
+        <div class="field">
+          <label for="q-date" data-i18n="quote.date">Fecha</label>
+          <input id="q-date" type="date" required>
+        </div>
+        <div class="field">
+          <label for="q-people" data-i18n="quote.people">Personas</label>
+          <input id="q-people" type="number" min="5" step="1" value="20" required>
+        </div>
+        <div class="field">
+          <label for="q-type" data-i18n="quote.type">Ocasión</label>
+          <select id="q-type">
+            <option>Cumpleaños</option><option>Bautizo</option>
+            <option>Evento de trabajo</option><option>Reunión familiar</option><option>Otro</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="q-name" data-i18n="quote.name">Tu nombre</label>
+          <input id="q-name" type="text" required>
+        </div>
+        <div class="field full">
+          <label for="q-notes" data-i18n="quote.notes">¿Qué te gustaría?</label>
+          <textarea id="q-notes" placeholder="Picadera completa, pepitos, yaroas…"></textarea>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block" data-i18n="quote.send">Enviar por WhatsApp</button>
+    </form>
+  </div>
+</div>
+
+<!-- Photo lightbox: the food photography is the strongest asset, so let people
+     actually look at it. Arrow keys move through the current filtered list. -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Foto del plato">
+  <button class="lb-close" id="lb-close" aria-label="Cerrar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+  <button class="lb-btn lb-prev" id="lb-prev" aria-label="Anterior"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+  <img id="lb-img" src="" alt="">
+  <button class="lb-btn lb-next" id="lb-next" aria-label="Siguiente"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+  <div class="lb-cap" id="lb-cap"></div>
+</div>
 
 <div class="toasts" id="toasts" aria-live="polite"></div>
 
@@ -1029,6 +1288,34 @@ const PRODUCTS = [
 ];
 
 /* ==========================================================================
+   INGREDIENT TAGS
+   --------------------------------------------------------------------------
+   Derived ONLY from what the restaurant already publishes about each dish
+   (pernil, ham, camarones, and so on) or from the dish name itself. Nothing
+   here is guessed.
+
+   These are descriptive, not an allergen guarantee -- a shared fryer means
+   "sin carne" cannot mean "safe for a pork allergy", which is exactly why the
+   label is "meat-free" rather than "vegetarian" and why the page carries a
+   visible disclaimer.
+
+   TODO before launch: have the client confirm every one of these, and ask
+   about the dishes deliberately left untagged (Los Tres Golpes, Kipes,
+   Pechurinas, Salchipapa, Quesadillas) where the meat isn't stated.
+   ========================================================================== */
+const TAGS = {
+  cerdo:    ["cubano","chicharron","longaniza","morsilla","chuleta","orejita"],
+  mariscos: ["shrimp","snapper","alfredo"],
+  sincarne: ["greensalad","fries","yuca","tostones","batata","guandules","chinola","limon","tamarindo"]
+};
+Object.entries(TAGS).forEach(([tag, ids]) =>
+  ids.forEach(id => {
+    const p = PRODUCTS.find(x => x.id === id);
+    if (p) (p.tags = p.tags || []).push(tag);
+  })
+);
+
+/* ==========================================================================
    I18N — the live site mixes Spanish and English mid-section with no logic.
    Here both languages are complete and the visitor chooses.
    ========================================================================== */
@@ -1055,7 +1342,17 @@ const I18N = {
     "add":"Agregar","added":"agregado al carrito","optNote":"Este plato lleva opciones (carne, relleno). Lo confirmamos contigo por WhatsApp.",
     "open":"Abierto ahora","closed":"Cerrado ahora","closesAt":"cierra a las","opensAt":"abre a las","signup":"¡Listo! Te escribimos pronto.",
     "days":["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"],
-    "waIntro":"¡Hola Go Picadera! Quiero hacer un pedido:","waMode":"Modo","waTotal":"Total estimado"
+    "waIntro":"¡Hola Go Picadera! Quiero hacer un pedido:","waMode":"Modo","waTotal":"Total estimado",
+    "diet.filter":"Ingredientes:","diet.cerdo":"Contiene cerdo","diet.mariscos":"Mariscos","diet.sincarne":"Sin carne",
+    "diet.note":"Las etiquetas son informativas y se basan en la descripción de cada plato. La cocina usa freidoras y superficies compartidas, así que no podemos garantizar la ausencia de alérgenos. Si tienes una alergia, escríbenos antes de ordenar.",
+    "closed.title":"Ahora mismo estamos cerrados","closed.body":"Puedes enviar tu pedido igual — lo programamos para {t} y te confirmamos por WhatsApp.",
+    "closed.wa":"PEDIDO PROGRAMADO para las {t}",
+    "again.title":"Tu último pedido","again.cta":"Volver a pedir","again.done":"Pedido anterior agregado",
+    "quote.title":"Pide tu cotización","quote.sub":"Cuéntanos lo básico y te mandamos precio por WhatsApp.",
+    "quote.date":"Fecha","quote.people":"Personas","quote.type":"Ocasión","quote.name":"Tu nombre",
+    "quote.notes":"¿Qué te gustaría?","quote.send":"Enviar por WhatsApp",
+    "quote.wa":"¡Hola Go Picadera! Quiero cotizar catering:","quote.for":"Para","quote.on":"Fecha","quote.guests":"Personas","quote.who":"Nombre",
+    "install":"Instalar la app"
   },
   en:{
     "topbar":"Free delivery in Brooklyn · Open daily from 11:00 AM",
@@ -1079,7 +1376,17 @@ const I18N = {
     "add":"Add","added":"added to cart","optNote":"This dish has options (meat, filling). We'll confirm them with you on WhatsApp.",
     "open":"Open now","closed":"Closed now","closesAt":"closes at","opensAt":"opens at","signup":"Done! We'll be in touch.",
     "days":["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
-    "waIntro":"Hi Go Picadera! I'd like to place an order:","waMode":"Mode","waTotal":"Estimated total"
+    "waIntro":"Hi Go Picadera! I'd like to place an order:","waMode":"Mode","waTotal":"Estimated total",
+    "diet.filter":"Ingredients:","diet.cerdo":"Contains pork","diet.mariscos":"Seafood","diet.sincarne":"Meat-free",
+    "diet.note":"Tags are informational and based on each dish's own description. The kitchen uses shared fryers and prep surfaces, so we can't guarantee any dish is allergen-free. If you have an allergy, message us before ordering.",
+    "closed.title":"We're closed right now","closed.body":"You can still send your order — we'll schedule it for {t} and confirm on WhatsApp.",
+    "closed.wa":"SCHEDULED ORDER for {t}",
+    "again.title":"Your last order","again.cta":"Order it again","again.done":"Previous order added",
+    "quote.title":"Get a catering quote","quote.sub":"Tell us the basics and we'll send pricing on WhatsApp.",
+    "quote.date":"Date","quote.people":"Guests","quote.type":"Occasion","quote.name":"Your name",
+    "quote.notes":"What would you like?","quote.send":"Send on WhatsApp",
+    "quote.wa":"Hi Go Picadera! I'd like a catering quote:","quote.for":"For","quote.on":"Date","quote.guests":"Guests","quote.who":"Name",
+    "install":"Install the app"
   }
 };
 
@@ -1109,6 +1416,7 @@ const store = {
 let lang = store.get("gp-lang") || "es";
 let cart = new Map();
 let activeCat = "all";
+let diet = new Set();
 let query = "";
 let mode = "delivery";
 let modalItem = null, modalQty = 1, lastFocus = null;
@@ -1128,7 +1436,8 @@ function applyLang(){
   $$(".lang button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.lang === lang)));
   $("#menu-search").placeholder = t("menu.search");
   store.set("gp-lang", lang);
-  renderChips(); renderMenu(); renderRail(); renderCart(); renderHours(); renderStatus(); renderFooterCats();
+  renderChips(); renderDiet(); renderMenu(); renderRail(); renderCart();
+  renderHours(); renderStatus(); renderFooterCats(); renderAgain();
 }
 
 /* ---- open / closed ------------------------------------------------------*/
@@ -1204,13 +1513,51 @@ function renderChips(){
     CATEGORIES.map(c => `<button class="chip" data-cat="${c.slug}" aria-pressed="${activeCat===c.slug}">${c[lang]}</button>`).join("");
 }
 
+function renderDiet(){
+  $("#diet-row").innerHTML = `<span class="lbl">${t("diet.filter")}</span>` +
+    ["cerdo","mariscos","sincarne"].map(k =>
+      `<button class="dchip" data-diet="${k}" aria-pressed="${diet.has(k)}">${t("diet."+k)}</button>`
+    ).join("");
+}
+
 function filtered(){
   const q = query.trim().toLowerCase();
   return PRODUCTS.filter(p => {
     if (activeCat !== "all" && p.cat !== activeCat) return false;
+    // "sincarne" is inclusive (show only meat-free); the other two are
+    // exclusions, because nobody filters *for* an allergen.
+    if (diet.has("sincarne") && !(p.tags||[]).includes("sincarne")) return false;
+    if (diet.has("cerdo")    &&  (p.tags||[]).includes("cerdo"))    return false;
+    if (diet.has("mariscos") &&  (p.tags||[]).includes("mariscos")) return false;
     if (!q) return true;
     return (p.name + " " + (p.es||"") + " " + (p.en||"")).toLowerCase().includes(q);
   });
+}
+
+function tagsHTML(p){
+  if (!p.tags || !p.tags.length) return "";
+  return `<div class="tags">` + p.tags.map(k =>
+    `<span class="tag-pill ${k}">${t("diet."+k)}</span>`).join("") + `</div>`;
+}
+
+/* ---- order again --------------------------------------------------------*/
+function renderAgain(){
+  let last = null;
+  try { last = JSON.parse(store.get("gp-last") || "null"); } catch(e){}
+  const slot = $("#again-slot");
+  if (!last || !last.length){ slot.innerHTML = ""; return; }
+  const names = last.map(([id,q]) => {
+    const p = PRODUCTS.find(x => x.id === id);
+    return p ? `${q}× ${p.name}` : null;
+  }).filter(Boolean);
+  if (!names.length){ slot.innerHTML = ""; return; }
+  slot.innerHTML = `<div class="again">
+    <div class="again-body">
+      <div class="again-title">${t("again.title")}</div>
+      <div class="again-items">${names.join(" · ")}</div>
+    </div>
+    <button class="btn btn-primary btn-sm" id="again-btn">${t("again.cta")}</button>
+  </div>`;
 }
 
 function renderMenu(){
@@ -1226,6 +1573,7 @@ function renderMenu(){
       </button>
       <div class="tile-body">
         <h3 class="tile-name">${p.name}</h3>
+        ${tagsHTML(p)}
         <div class="tile-foot">
           ${priceHTML(p)}
           <button class="add-btn" data-add="${p.id}" aria-label="${t("add")} ${p.name}">${plusIcon}</button>
@@ -1292,6 +1640,14 @@ function renderCart(){
   $("#t-fee").textContent = t("cart.free");
   $("#t-total").textContent = money(sub + tax);
   $("#cart-foot").hidden = false;
+
+  // Closed-state: don't let an order vanish into a shut kitchen unannounced.
+  const st = statusNow();
+  $("#closed-notice").hidden = st.open;
+  if (!st.open){
+    $("#closed-title").textContent = t("closed.title");
+    $("#closed-body").textContent = t("closed.body").replace("{t}", fmtTime(st.next));
+  }
   $$(".mode-toggle button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.mode === mode)));
 }
 
@@ -1301,12 +1657,65 @@ function checkout(){
     return `• ${q}× ${p.name}${p.opt ? " (" + t("menu.custom") + ")" : " — " + money(p.price * q)}`;
   });
   const sub = subtotal(), tax = sub * TAX;
+  const st = statusNow();
   const msg = [
     t("waIntro"), "", ...lines, "",
     `${t("waMode")}: ${mode === "delivery" ? t("cart.delivery") : t("cart.pickup")}`,
-    `${t("waTotal")}: ${money(sub + tax)}`
+    `${t("waTotal")}: ${money(sub + tax)}`,
+    ...(st.open ? [] : ["", t("closed.wa").replace("{t}", fmtTime(st.next))])
   ].join("\n");
+
+  // Remember it so the customer can reorder in one tap next time.
+  store.set("gp-last", JSON.stringify([...cart]));
+  renderAgain();
+
   window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
+}
+
+/* ---- catering quote -----------------------------------------------------*/
+function sendQuote(e){
+  e.preventDefault();
+  const v = id => $(id).value.trim();
+  const msg = [
+    t("quote.wa"), "",
+    `${t("quote.for")}: ${v("#q-type")}`,
+    `${t("quote.on")}: ${v("#q-date")}`,
+    `${t("quote.guests")}: ${v("#q-people")}`,
+    `${t("quote.who")}: ${v("#q-name")}`,
+    ...(v("#q-notes") ? ["", v("#q-notes")] : [])
+  ].join("\n");
+  closeAll();
+  window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
+}
+
+/* ---- lightbox -----------------------------------------------------------*/
+let lbList = [], lbIdx = 0;
+function openLightbox(id){
+  lbList = filtered();
+  lbIdx = Math.max(0, lbList.findIndex(p => p.id === id));
+  if (!lbList.length) return;
+  paintLightbox();
+  $("#lightbox").classList.add("on");
+  document.body.classList.add("locked");
+  $("#lb-close").focus();
+}
+function paintLightbox(){
+  const p = lbList[lbIdx];
+  $("#lb-img").src = p.img;
+  $("#lb-img").alt = p.name;
+  $("#lb-cap").innerHTML = p.name +
+    `<span>${p.opt ? t("menu.custom") : money(p.price)}</span>`;
+}
+function moveLightbox(d){
+  if (!lbList.length) return;
+  lbIdx = (lbIdx + d + lbList.length) % lbList.length;
+  paintLightbox();
+}
+function closeLightbox(){
+  $("#lightbox").classList.remove("on");
+  if (!$("#modal").classList.contains("on") && !$("#cart").classList.contains("on")) {
+    document.body.classList.remove("locked");
+  }
 }
 
 /* ---- modal --------------------------------------------------------------*/
@@ -1337,6 +1746,7 @@ function updateModalBtn(){
 }
 function closeAll(){
   $("#modal").classList.remove("on");
+  $("#quote").classList.remove("on");
   $("#cart").classList.remove("on");
   $("#overlay").classList.remove("on");
   $("#mobile-nav").classList.remove("open");
@@ -1381,6 +1791,27 @@ document.addEventListener("click", e => {
 
   const chip = e.target.closest("[data-cat]");
   if (chip){ activeCat = chip.dataset.cat; query = ""; $("#menu-search").value = ""; renderChips(); renderMenu(); return; }
+
+  const dchip = e.target.closest("[data-diet]");
+  if (dchip){
+    const k = dchip.dataset.diet;
+    diet.has(k) ? diet.delete(k) : diet.add(k);
+    renderDiet(); renderMenu(); return;
+  }
+
+  if (e.target.closest("#again-btn")){
+    let last = [];
+    try { last = JSON.parse(store.get("gp-last") || "[]"); } catch(err){}
+    last.forEach(([id,q]) => cart.set(id, (cart.get(id)||0) + q));
+    saveCart(); renderCart(); toast(t("again.done")); openCart(); return;
+  }
+
+  if (e.target.closest("#quote-open")){
+    lastFocus = document.activeElement;
+    $("#quote").classList.add("on"); $("#overlay").classList.add("on");
+    document.body.classList.add("locked"); $("#q-date").focus(); return;
+  }
+  if (e.target.closest("#quote-close")){ closeAll(); return; }
 
   const jump = e.target.closest("[data-jump]");
   if (jump){ activeCat = jump.dataset.jump; renderChips(); renderMenu(); return; }
@@ -1428,7 +1859,22 @@ $("#signup-form").addEventListener("submit", e => {
   toast(t("signup"));
 });
 
-addEventListener("keydown", e => { if (e.key === "Escape") closeAll(); });
+$("#quote-form").addEventListener("submit", sendQuote);
+$("#modal-img").addEventListener("click", () => { if (modalItem) openLightbox(modalItem.id); });
+$("#lb-close").addEventListener("click", closeLightbox);
+$("#lb-prev").addEventListener("click", () => moveLightbox(-1));
+$("#lb-next").addEventListener("click", () => moveLightbox(1));
+$("#lightbox").addEventListener("click", e => { if (e.target.id === "lightbox") closeLightbox(); });
+
+addEventListener("keydown", e => {
+  if ($("#lightbox").classList.contains("on")){
+    if (e.key === "Escape"){ closeLightbox(); return; }
+    if (e.key === "ArrowRight"){ moveLightbox(1); return; }
+    if (e.key === "ArrowLeft"){ moveLightbox(-1); return; }
+    return;
+  }
+  if (e.key === "Escape") closeAll();
+});
 addEventListener("scroll", () => $("#nav").classList.toggle("shrunk", scrollY > 40), { passive:true });
 
 /* Keeps toasts and page padding clear of the sticky mobile bar */
@@ -1443,7 +1889,13 @@ addEventListener("resize", syncBar);
 applyLang();
 observeReveals();
 syncBar();
-setInterval(renderStatus, 60000);
+setInterval(() => { renderStatus(); if (cartCount()) renderCart(); }, 60000);
+
+/* Service worker: lets the site be installed to the home screen and still open
+   on a bad connection. Registered only over http(s) -- file:// has no SW. */
+if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+  addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+}
 </script>
 </body>
 </html>
