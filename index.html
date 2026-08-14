@@ -1,0 +1,1412 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0A0B0E">
+<title>Go Picadera — Sabor de RD, Flow de BK | Comida dominicana en Brooklyn</title>
+<meta name="description" content="Comida rápida dominicana en Brooklyn. Pica pollo, chimis, yaroas, mofongos y los tres golpes. Ordena directo en 4820 4th Ave — entrega gratis, 4.9★ en Google.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ==========================================================================
+   GO PICADERA — DARK DIRECTION
+   --------------------------------------------------------------------------
+   Thesis: the logo and most of the existing food photography were made for
+   dark. Yellow on white reads as discount fast food; yellow on near-black
+   reads as premium. Same logo, same photos, different price perception.
+
+   Built entirely on the restaurant's real assets. Mobile-first throughout --
+   restaurant traffic is overwhelmingly phones.
+   ========================================================================== */
+
+:root{
+  --ink:#0A0B0E; --surface:#131519; --surface-2:#1B1E25; --surface-3:#242832;
+  --line:rgba(255,255,255,.09); --line-warm:rgba(255,196,0,.22);
+  --yellow:#FFC400; --yellow-dim:#C79800;
+  --ember:#FF6A1A; --ember-deep:#E8410B;
+  --green:#3FD07A;
+  --text:#F6F4EF; --muted:#9C9EA8; --faint:#6A6C76;
+  --radius:18px; --radius-lg:26px; --shell:1280px;
+  --ease:cubic-bezier(.22,.61,.36,1);
+  --font-display:'Archivo','Arial Black',sans-serif;
+  --font-body:'Inter',system-ui,-apple-system,sans-serif;
+  --bar-h:0px;
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; overflow-x:clip; scroll-padding-top:96px; }
+@media (prefers-reduced-motion:reduce){ html{ scroll-behavior:auto; } }
+
+body{
+  margin:0; background:var(--ink); color:var(--text);
+  font-family:var(--font-body); font-size:16px; line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  /* `clip` not `hidden`: overflow:hidden on body turns it into a scroll
+     container and breaks position:sticky on the nav and the menu toolbar. */
+  overflow-x:clip;
+  padding-bottom:var(--bar-h);
+}
+body.locked{ overflow:hidden; }
+
+img,video{ display:block; max-width:100%; }
+a{ color:inherit; text-decoration:none; }
+button{ font:inherit; color:inherit; background:none; border:0; cursor:pointer; }
+input,select{ font:inherit; }
+
+:focus-visible{ outline:3px solid var(--yellow); outline-offset:3px; border-radius:6px; }
+
+.shell{ width:100%; max-width:var(--shell); margin-inline:auto; padding-inline:24px; }
+@media (max-width:640px){ .shell{ padding-inline:16px; } }
+
+.sr-only{
+  position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+  overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;
+}
+
+.display{
+  font-family:var(--font-display);
+  font-variation-settings:'wdth' 118,'wght' 900; font-weight:900;
+  line-height:.88; letter-spacing:-.02em; text-transform:uppercase;
+  margin:0; text-wrap:balance;
+}
+.eyebrow{
+  font-family:var(--font-display);
+  font-variation-settings:'wdth' 100,'wght' 700;
+  font-size:.72rem; letter-spacing:.32em; text-transform:uppercase;
+  color:var(--yellow); margin:0 0 16px;
+}
+.section{ padding:clamp(64px,8vw,124px) 0; }
+.section-head{
+  display:flex; align-items:flex-end; justify-content:space-between;
+  gap:26px; flex-wrap:wrap; margin-bottom:40px;
+}
+.section-title{ font-size:clamp(2rem,5vw,3.6rem); }
+.section-sub{ color:var(--muted); max-width:52ch; margin:14px 0 0; }
+
+/* Buttons -----------------------------------------------------------------*/
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:10px;
+  padding:15px 30px; border-radius:100px; font-weight:700; font-size:.95rem;
+  transition:transform .25s var(--ease), box-shadow .25s var(--ease), background .25s var(--ease), border-color .25s;
+  white-space:nowrap; text-align:center;
+}
+.btn-primary{ background:var(--yellow); color:#0A0B0E; box-shadow:0 6px 26px rgba(255,196,0,.24); }
+.btn-primary:hover{ transform:translateY(-2px); box-shadow:0 12px 36px rgba(255,196,0,.38); }
+.btn-ghost{ border:1.5px solid rgba(255,255,255,.24); }
+.btn-ghost:hover{ border-color:var(--yellow); color:var(--yellow); }
+.btn-dark{ background:#0A0B0E; color:var(--yellow); }
+.btn-dark:hover{ transform:translateY(-2px); }
+.btn-sm{ padding:11px 22px; font-size:.87rem; }
+.btn:disabled{ opacity:.4; cursor:not-allowed; transform:none; box-shadow:none; }
+.btn-block{ width:100%; }
+
+/* ==========================================================================
+   NAV
+   ========================================================================== */
+.topbar{
+  background:var(--yellow); color:#0A0B0E; font-size:.75rem; font-weight:700;
+  letter-spacing:.06em; text-transform:uppercase; text-align:center; padding:9px 16px;
+}
+.nav{
+  position:sticky; top:0; z-index:70;
+  background:rgba(10,11,14,.72);
+  backdrop-filter:blur(18px) saturate(150%); -webkit-backdrop-filter:blur(18px) saturate(150%);
+  border-bottom:1px solid var(--line); transition:padding .3s var(--ease);
+}
+.nav-inner{ display:flex; align-items:center; gap:24px; padding:12px 24px; max-width:var(--shell); margin-inline:auto; }
+.nav.shrunk .nav-inner{ padding-block:8px; }
+.nav-logo img{ height:52px; width:auto; transition:height .3s var(--ease); }
+.nav.shrunk .nav-logo img{ height:40px; }
+
+.nav-links{ display:flex; gap:28px; margin-left:auto; }
+.nav-links a{ font-size:.9rem; font-weight:600; color:var(--muted); position:relative; padding-block:4px; transition:color .2s; }
+.nav-links a::after{ content:''; position:absolute; left:0; bottom:0; height:2px; width:0; background:var(--yellow); transition:width .28s var(--ease); }
+.nav-links a:hover{ color:var(--text); }
+.nav-links a:hover::after{ width:100%; }
+
+.nav-actions{ display:flex; align-items:center; gap:10px; margin-left:auto; }
+.nav-links + .nav-actions{ margin-left:0; }
+
+.icon-btn{
+  width:42px; height:42px; border-radius:50%; border:1px solid var(--line);
+  display:grid; place-items:center; flex:none; transition:border-color .2s, background .2s;
+}
+.icon-btn:hover{ border-color:var(--yellow); background:rgba(255,196,0,.08); }
+.cart-btn{ position:relative; }
+.cart-count{
+  position:absolute; top:-4px; right:-4px; background:var(--ember); color:#fff;
+  font-size:.66rem; font-weight:700; min-width:19px; height:19px; border-radius:100px;
+  display:grid; place-items:center; padding-inline:5px;
+  transform:scale(0); transition:transform .3s var(--ease);
+}
+.cart-count.on{ transform:scale(1); }
+
+/* Language toggle ---------------------------------------------------------*/
+.lang{ display:flex; border:1px solid var(--line); border-radius:100px; overflow:hidden; flex:none; }
+.lang button{
+  padding:9px 13px; font-size:.76rem; font-weight:700; letter-spacing:.06em;
+  color:var(--faint); transition:background .2s, color .2s;
+}
+.lang button[aria-pressed="true"]{ background:var(--yellow); color:#0A0B0E; }
+
+.nav-toggle{ display:none; }
+@media (max-width:1040px){
+  .nav-links{ display:none; }
+  .nav-toggle{ display:grid; }
+  .nav-actions{ margin-left:auto; }
+}
+@media (max-width:520px){
+  .nav-inner{ gap:12px; padding-inline:16px; }
+  .nav-logo img{ height:42px; }
+  .lang{ display:none; }
+}
+
+/* Mobile drawer -----------------------------------------------------------*/
+.mobile-nav{
+  position:fixed; inset:0; z-index:95; background:var(--ink);
+  transform:translateX(100%); transition:transform .4s var(--ease);
+  display:flex; flex-direction:column; padding:20px 24px calc(24px + env(safe-area-inset-bottom));
+  overflow-y:auto;
+}
+.mobile-nav.open{ transform:none; }
+.mobile-nav-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:36px; }
+.mobile-nav a.mn-link{
+  font-family:var(--font-display); font-variation-settings:'wdth' 112,'wght' 800;
+  font-size:2rem; text-transform:uppercase; padding:14px 0;
+  border-bottom:1px solid var(--line);
+}
+.mobile-nav-foot{ margin-top:auto; padding-top:28px; display:grid; gap:12px; }
+
+/* ==========================================================================
+   HERO
+   ========================================================================== */
+.hero{ position:relative; min-height:min(92vh,860px); display:flex; align-items:flex-end; overflow:hidden; }
+.hero-media{ position:absolute; inset:0; z-index:0; }
+.hero-media img{ width:100%; height:100%; object-fit:cover; object-position:center 42%; }
+.hero-media::after{
+  content:''; position:absolute; inset:0;
+  background:
+    radial-gradient(120% 80% at 50% 15%, rgba(255,106,26,.18) 0%, transparent 60%),
+    linear-gradient(to bottom, rgba(10,11,14,.6) 0%, rgba(10,11,14,.2) 30%, rgba(10,11,14,.9) 76%, var(--ink) 100%);
+}
+.hero-content{ position:relative; z-index:2; width:100%; padding-bottom:clamp(40px,7vw,84px); }
+.hero h1{ font-size:clamp(3rem,13vw,11rem); font-variation-settings:'wdth' 122,'wght' 900; }
+.hero h1 .l1{ display:block; }
+.hero h1 .l2{
+  display:block;
+  background:linear-gradient(96deg,var(--yellow) 0%,var(--ember) 58%,var(--ember-deep) 100%);
+  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent;
+}
+.hero-tagline{ font-size:clamp(.98rem,1.8vw,1.2rem); color:var(--muted); max-width:44ch; margin:24px 0 30px; }
+.hero-ctas{ display:flex; gap:12px; flex-wrap:wrap; }
+.hero-facts{ display:flex; gap:12px 30px; flex-wrap:wrap; align-items:center; margin-top:38px; padding-top:24px; border-top:1px solid var(--line); }
+.fact{ display:flex; align-items:center; gap:9px; font-size:.88rem; color:var(--muted); }
+.fact strong{ color:var(--text); font-weight:600; }
+.fact svg{ flex:none; color:var(--yellow); }
+/* Address opens Google Maps -- give it link affordance so it doesn't read
+   as the static facts sitting either side of it. */
+.fact-link{ transition:color .2s; }
+.fact-link strong{ text-decoration:underline; text-decoration-color:var(--line-warm); text-underline-offset:3px; transition:text-decoration-color .2s; }
+.fact-link:hover{ color:var(--text); }
+.fact-link:hover strong{ color:var(--yellow); text-decoration-color:var(--yellow); }
+.fact-arrow{ opacity:.5; transition:transform .25s var(--ease), opacity .2s; }
+.fact-link:hover .fact-arrow{ opacity:1; transform:translate(2px,-2px); }
+.rating-pill{
+  display:inline-flex; align-items:center; gap:9px; background:rgba(255,255,255,.06);
+  border:1px solid var(--line-warm); padding:8px 15px; border-radius:100px; font-size:.86rem;
+}
+.rating-pill .score{ font-weight:700; color:var(--yellow); font-size:1rem; }
+.stars{ color:var(--yellow); letter-spacing:1px; font-size:.8rem; }
+
+/* Live open/closed status -------------------------------------------------*/
+.status{ display:inline-flex; align-items:center; gap:8px; font-size:.88rem; font-weight:600; }
+.status .dot{ width:9px; height:9px; border-radius:50%; flex:none; }
+.status.open .dot{ background:var(--green); box-shadow:0 0 0 0 rgba(63,208,122,.6); animation:pulse 2.4s infinite; }
+.status.closed .dot{ background:var(--ember-deep); }
+.status.open{ color:var(--green); }
+.status.closed{ color:var(--muted); }
+@keyframes pulse{ 70%{ box-shadow:0 0 0 9px rgba(63,208,122,0); } 100%{ box-shadow:0 0 0 0 rgba(63,208,122,0); } }
+@media (prefers-reduced-motion:reduce){ .status.open .dot{ animation:none; } }
+
+/* ==========================================================================
+   MARQUEE
+   ========================================================================== */
+.marquee{ background:var(--yellow); color:#0A0B0E; padding:14px 0; overflow:hidden; border-block:1px solid rgba(0,0,0,.14); }
+.marquee-track{ display:flex; width:max-content; animation:slide 42s linear infinite; }
+.marquee-track span{
+  font-family:var(--font-display); font-variation-settings:'wdth' 112,'wght' 800;
+  font-size:1rem; text-transform:uppercase; letter-spacing:.06em;
+  padding-inline:24px; display:flex; align-items:center; gap:24px;
+}
+.marquee-track span::after{ content:'★'; font-size:.68rem; opacity:.55; }
+@keyframes slide{ to{ transform:translateX(-50%); } }
+@media (prefers-reduced-motion:reduce){ .marquee-track{ animation:none; } }
+
+/* ==========================================================================
+   BEST SELLERS RAIL
+   ========================================================================== */
+.rail{
+  display:flex; gap:18px; overflow-x:auto; scroll-snap-type:x mandatory;
+  padding-block:6px 24px;
+  padding-inline:max(24px, calc((100% - var(--shell))/2 + 24px));
+  scroll-padding-inline:max(24px, calc((100% - var(--shell))/2 + 24px));
+  scrollbar-width:none;
+}
+.rail::-webkit-scrollbar{ display:none; }
+@media (max-width:640px){
+  .rail{ padding-inline:16px; scroll-padding-inline:16px; gap:14px; }
+}
+
+.card{
+  flex:none; width:min(300px,72vw); scroll-snap-align:start;
+  background:var(--surface); border:1px solid var(--line);
+  border-radius:var(--radius); overflow:hidden; text-align:left;
+  transition:transform .35s var(--ease), border-color .35s var(--ease);
+  display:flex; flex-direction:column;
+}
+.card:hover{ transform:translateY(-6px); border-color:var(--line-warm); }
+/* These media wells are <button>s so the whole photo opens the dish — they
+   need the UA button styling stripped or they inherit padding and a border. */
+.card-media,.tile-media{ display:block; width:100%; padding:0; border:0; text-align:left; }
+.card-media{ position:relative; aspect-ratio:4/3; overflow:hidden; background:var(--surface-2); }
+.card-media img{ width:100%; height:100%; object-fit:cover; transition:transform .6s var(--ease); }
+.card:hover .card-media img{ transform:scale(1.06); }
+.card-media::after{ content:''; position:absolute; inset:0; background:linear-gradient(to top, rgba(10,11,14,.55), transparent 55%); }
+.rank{
+  position:absolute; top:11px; left:11px; z-index:2;
+  background:rgba(10,11,14,.78); backdrop-filter:blur(8px);
+  border:1px solid var(--line-warm); color:var(--yellow);
+  font-family:var(--font-display); font-size:.7rem; font-weight:800;
+  letter-spacing:.1em; padding:5px 10px; border-radius:100px;
+}
+.card-body{ padding:16px 18px 18px; display:flex; flex-direction:column; flex:1; }
+.card-name{ font-size:1rem; font-weight:600; margin:0 0 4px; }
+.card-desc{
+  font-size:.82rem; color:var(--faint); margin:0 0 14px;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; min-height:2.5em;
+}
+.card-foot{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:auto; }
+.price{ font-family:var(--font-display); font-variation-settings:'wdth' 110,'wght' 800; font-size:1.4rem; color:var(--yellow); line-height:1; }
+.price.opt{ font-size:.9rem; font-family:var(--font-body); font-weight:600; color:var(--muted); text-transform:none; }
+.add-btn{
+  width:40px; height:40px; border-radius:50%; background:var(--yellow); color:#0A0B0E;
+  display:grid; place-items:center; flex:none;
+  transition:transform .22s var(--ease), background .22s;
+}
+.add-btn svg{ width:19px; height:19px; }
+.add-btn:hover{ transform:scale(1.12); background:var(--ember); }
+.rail-nav{ display:flex; gap:10px; }
+@media (max-width:700px){ .rail-nav{ display:none; } }
+
+/* ==========================================================================
+   INTERACTIVE MENU
+   ========================================================================== */
+.menu-tools{
+  position:sticky; top:76px; z-index:40;
+  background:rgba(10,11,14,.9); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+  padding:14px 0; margin-bottom:28px; border-bottom:1px solid var(--line);
+}
+.search-wrap{ position:relative; margin-bottom:12px; }
+.search-wrap svg{ position:absolute; left:18px; top:50%; transform:translateY(-50%); color:var(--faint); pointer-events:none; }
+#menu-search{
+  width:100%; background:var(--surface); border:1px solid var(--line); border-radius:100px;
+  padding:14px 20px 14px 48px; color:var(--text); font-size:.95rem; transition:border-color .25s;
+}
+#menu-search::placeholder{ color:var(--faint); }
+#menu-search:focus{ border-color:var(--yellow); outline:none; }
+
+.chips{ display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; padding-bottom:2px; }
+.chips::-webkit-scrollbar{ display:none; }
+.chip{
+  flex:none; padding:9px 18px; border-radius:100px; border:1px solid var(--line);
+  font-size:.85rem; font-weight:600; color:var(--muted); white-space:nowrap;
+  transition:background .22s, color .22s, border-color .22s;
+}
+.chip:hover{ border-color:var(--line-warm); color:var(--text); }
+.chip[aria-pressed="true"]{ background:var(--yellow); color:#0A0B0E; border-color:var(--yellow); }
+
+.menu-grid{ display:grid; gap:16px; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); }
+@media (max-width:520px){ .menu-grid{ grid-template-columns:repeat(2,1fr); gap:12px; } }
+
+.tile{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+  overflow:hidden; display:flex; flex-direction:column; text-align:left;
+  transition:transform .3s var(--ease), border-color .3s;
+}
+.tile:hover{ transform:translateY(-4px); border-color:var(--line-warm); }
+.tile-media{ position:relative; aspect-ratio:4/3; background:var(--surface-2); overflow:hidden; }
+.tile-media img{ width:100%; height:100%; object-fit:cover; transition:transform .5s var(--ease); }
+.tile:hover .tile-media img{ transform:scale(1.05); }
+.badge{
+  position:absolute; top:9px; left:9px; z-index:2; font-size:.62rem; font-weight:800;
+  letter-spacing:.1em; text-transform:uppercase; padding:4px 9px; border-radius:100px;
+  background:var(--yellow); color:#0A0B0E;
+}
+.badge.party{ background:var(--ember); color:#fff; }
+.tile-body{ padding:13px 14px 14px; display:flex; flex-direction:column; gap:4px; flex:1; }
+.tile-name{ font-size:.92rem; font-weight:600; line-height:1.3; }
+.tile-foot{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:auto; padding-top:10px; }
+.tile-foot .price{ font-size:1.15rem; }
+.tile-foot .add-btn{ width:34px; height:34px; }
+.tile-foot .add-btn svg{ width:16px; height:16px; }
+
+.menu-empty{ text-align:center; padding:56px 20px; color:var(--muted); }
+.menu-empty strong{ display:block; font-size:1.1rem; color:var(--text); margin-bottom:6px; }
+.menu-count{ font-size:.83rem; color:var(--faint); margin:0 0 16px; }
+
+/* ==========================================================================
+   MODAL (dish quick view)
+   ========================================================================== */
+.overlay{
+  position:fixed; inset:0; z-index:90; background:rgba(5,6,8,.78);
+  backdrop-filter:blur(6px); opacity:0; pointer-events:none; transition:opacity .3s;
+}
+.overlay.on{ opacity:1; pointer-events:auto; }
+
+.modal{
+  position:fixed; z-index:96; left:50%; top:50%; transform:translate(-50%,-46%) scale(.97);
+  width:min(560px,calc(100vw - 32px)); max-height:min(86vh,760px); overflow-y:auto;
+  background:var(--surface); border:1px solid var(--line-warm); border-radius:var(--radius-lg);
+  opacity:0; pointer-events:none; transition:opacity .3s var(--ease), transform .3s var(--ease);
+}
+.modal.on{ opacity:1; pointer-events:auto; transform:translate(-50%,-50%) scale(1); }
+.modal-media{ aspect-ratio:16/10; overflow:hidden; background:var(--surface-2); }
+.modal-media img{ width:100%; height:100%; object-fit:cover; }
+.modal-body{ padding:24px; }
+.modal-body h3{ font-family:var(--font-display); font-variation-settings:'wdth' 112,'wght' 800; font-size:1.7rem; text-transform:uppercase; margin:0 0 8px; }
+.modal-desc{ color:var(--muted); margin:0 0 20px; }
+.modal-close{
+  position:absolute; top:14px; right:14px; width:38px; height:38px; border-radius:50%;
+  background:rgba(10,11,14,.7); backdrop-filter:blur(8px); display:grid; place-items:center; z-index:3;
+}
+.qty{ display:flex; align-items:center; gap:14px; border:1px solid var(--line); border-radius:100px; padding:6px 8px; }
+.qty button{ width:34px; height:34px; border-radius:50%; background:var(--surface-3); display:grid; place-items:center; font-size:1.2rem; transition:background .2s; }
+.qty button:hover{ background:var(--yellow); color:#0A0B0E; }
+.qty span{ min-width:22px; text-align:center; font-weight:700; font-variant-numeric:tabular-nums; }
+.modal-foot{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+.modal-foot .btn{ flex:1; min-width:170px; }
+.opt-note{
+  background:var(--surface-2); border:1px solid var(--line); border-radius:12px;
+  padding:12px 14px; font-size:.84rem; color:var(--muted); margin-bottom:18px;
+}
+
+/* ==========================================================================
+   CART DRAWER
+   ========================================================================== */
+.cart{
+  position:fixed; top:0; right:0; bottom:0; z-index:96; width:min(420px,100vw);
+  background:var(--surface); border-left:1px solid var(--line);
+  transform:translateX(100%); transition:transform .4s var(--ease);
+  display:flex; flex-direction:column;
+}
+.cart.on{ transform:none; }
+.cart-head{ display:flex; align-items:center; justify-content:space-between; padding:20px 22px; border-bottom:1px solid var(--line); }
+.cart-head h2{ font-family:var(--font-display); font-variation-settings:'wdth' 110,'wght' 800; font-size:1.3rem; text-transform:uppercase; margin:0; }
+.cart-items{ flex:1; overflow-y:auto; padding:16px 22px; display:grid; gap:12px; align-content:start; }
+
+.ci{ display:grid; grid-template-columns:64px 1fr auto; gap:12px; align-items:center; background:var(--surface-2); border-radius:14px; padding:10px; }
+.ci img{ width:64px; height:64px; object-fit:cover; border-radius:10px; }
+.ci-name{ font-size:.9rem; font-weight:600; line-height:1.3; }
+.ci-price{ font-size:.83rem; color:var(--yellow); font-weight:600; font-variant-numeric:tabular-nums; }
+.ci-qty{ display:flex; align-items:center; gap:9px; }
+.ci-qty button{ width:26px; height:26px; border-radius:50%; background:var(--surface-3); display:grid; place-items:center; font-size:.95rem; transition:background .2s; }
+.ci-qty button:hover{ background:var(--yellow); color:#0A0B0E; }
+.ci-qty span{ min-width:18px; text-align:center; font-size:.88rem; font-weight:700; font-variant-numeric:tabular-nums; }
+
+.cart-empty{ text-align:center; color:var(--faint); padding:60px 20px; }
+.cart-empty svg{ margin:0 auto 16px; color:var(--surface-3); }
+
+.cart-foot{ border-top:1px solid var(--line); padding:18px 22px calc(18px + env(safe-area-inset-bottom)); display:grid; gap:14px; }
+.mode-toggle{ display:grid; grid-template-columns:1fr 1fr; gap:6px; background:var(--surface-2); border-radius:100px; padding:5px; }
+.mode-toggle button{ padding:10px; border-radius:100px; font-size:.85rem; font-weight:600; color:var(--muted); transition:background .22s,color .22s; }
+.mode-toggle button[aria-pressed="true"]{ background:var(--yellow); color:#0A0B0E; }
+.totals{ display:grid; gap:7px; font-size:.9rem; }
+.totals div{ display:flex; justify-content:space-between; color:var(--muted); }
+.totals .grand{ color:var(--text); font-weight:700; font-size:1.15rem; padding-top:9px; border-top:1px solid var(--line); }
+.totals .grand span:last-child{ color:var(--yellow); font-family:var(--font-display); font-variation-settings:'wdth' 110,'wght' 800; font-size:1.5rem; font-variant-numeric:tabular-nums; }
+.cart-note{ font-size:.75rem; color:var(--faint); text-align:center; margin:0; }
+
+/* ==========================================================================
+   CATERING / REVIEWS / DELIVERY / SIGNUP
+   ========================================================================== */
+.catering-grid{ display:grid; grid-template-columns:1.15fr .85fr; border:1px solid var(--line); border-radius:var(--radius-lg); overflow:hidden; background:var(--surface); }
+.catering-video{ position:relative; min-height:440px; }
+.catering-video video,.catering-video img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.catering-video::after{ content:''; position:absolute; inset:0; background:linear-gradient(100deg, transparent 40%, rgba(19,21,25,.9) 100%); }
+.catering-copy{ padding:clamp(28px,4vw,54px); display:flex; flex-direction:column; justify-content:center; }
+.tag{ display:inline-block; background:var(--yellow); color:#0A0B0E; font-size:.68rem; font-weight:800; letter-spacing:.16em; text-transform:uppercase; padding:6px 13px; border-radius:100px; margin-bottom:18px; width:fit-content; }
+.catering-copy h2{ font-size:clamp(1.8rem,3.6vw,2.9rem); margin-bottom:14px; }
+.catering-copy p{ color:var(--muted); margin:0 0 24px; }
+.party-item{ display:flex; align-items:center; gap:14px; background:var(--ink); border:1px solid var(--line-warm); border-radius:var(--radius); padding:13px; margin-bottom:24px; }
+.party-item img{ width:70px; height:70px; object-fit:cover; border-radius:12px; flex:none; }
+.pi-name{ font-weight:600; font-size:.94rem; }
+.pi-meta{ font-size:.77rem; color:var(--faint); }
+.party-item .price{ margin-left:auto; font-size:1.15rem; }
+@media (max-width:860px){
+  .catering-grid{ grid-template-columns:1fr; }
+  .catering-video{ min-height:250px; }
+}
+@media (max-width:420px){
+  .party-item{ flex-wrap:wrap; }
+  .party-item .price{ margin-left:0; }
+}
+
+.score-card{ display:flex; align-items:center; gap:20px; background:linear-gradient(150deg,var(--surface-2),var(--surface)); border:1px solid var(--line-warm); border-radius:var(--radius); padding:18px 24px; }
+.score-big{ font-family:var(--font-display); font-variation-settings:'wdth' 115,'wght' 900; font-size:3.4rem; line-height:.9; color:var(--yellow); }
+.score-card .stars{ font-size:1rem; display:block; margin-bottom:3px; }
+.score-meta{ color:var(--muted); font-size:.83rem; margin:0; }
+.score-divider{ width:1px; align-self:stretch; background:var(--line); }
+@media (max-width:560px){
+  .score-card{ gap:14px; padding:16px 18px; flex-wrap:wrap; }
+  .score-big{ font-size:2.6rem; }
+  .score-card .btn{ width:100%; }
+  .score-divider{ display:none; }
+}
+
+.quote-grid{ columns:3; column-gap:16px; }
+@media (max-width:1000px){ .quote-grid{ columns:2; } }
+@media (max-width:600px){ .quote-grid{ columns:1; } }
+.quote{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:22px;
+  transition:border-color .3s, transform .3s var(--ease);
+  break-inside:avoid; -webkit-column-break-inside:avoid;
+  display:inline-block; width:100%; margin-bottom:16px;
+}
+.quote:hover{ border-color:var(--line-warm); transform:translateY(-4px); }
+.quote p{ margin:0 0 16px; font-size:.93rem; line-height:1.62; }
+.quote .stars{ display:block; margin-bottom:11px; }
+.quote-author{ display:flex; align-items:center; gap:10px; }
+.avatar{ width:35px; height:35px; border-radius:50%; flex:none; background:linear-gradient(140deg,var(--yellow),var(--ember)); color:#0A0B0E; display:grid; place-items:center; font-weight:700; font-size:.8rem; }
+.qa-name{ font-weight:600; font-size:.87rem; }
+.qa-when{ font-size:.75rem; color:var(--faint); }
+
+.delivery-direct{
+  background:linear-gradient(130deg,var(--yellow) 0%,#FFB300 100%); color:#0A0B0E;
+  border-radius:var(--radius-lg); padding:clamp(28px,4.5vw,54px);
+  display:flex; align-items:center; justify-content:space-between; gap:28px; flex-wrap:wrap;
+}
+.delivery-direct h3{ font-family:var(--font-display); font-variation-settings:'wdth' 116,'wght' 900; font-size:clamp(1.7rem,3.6vw,2.7rem); text-transform:uppercase; line-height:.95; margin:0 0 10px; }
+.delivery-direct p{ margin:0; max-width:46ch; font-weight:500; opacity:.82; }
+.apps-head{ text-align:center; margin:44px 0 20px; }
+.apps-head span{ color:var(--faint); font-size:.85rem; }
+.apps{ display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:12px; }
+.app{ display:flex; align-items:center; justify-content:center; gap:10px; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:18px 14px; font-weight:600; font-size:.93rem; transition:border-color .28s, background .28s, transform .28s var(--ease); }
+.app:hover{ border-color:var(--line-warm); background:var(--surface-2); transform:translateY(-3px); }
+.app .dot{ width:9px; height:9px; border-radius:50%; flex:none; }
+
+.signup-grid{ display:grid; grid-template-columns:1fr 1fr; border:1px solid var(--line); border-radius:var(--radius-lg); overflow:hidden; background:var(--surface); }
+.signup-media{ position:relative; min-height:380px; }
+.signup-media img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.signup-media::after{ content:''; position:absolute; inset:0; background:linear-gradient(80deg, transparent 45%, rgba(19,21,25,.92) 100%); }
+.signup-copy{ padding:clamp(28px,4vw,54px); display:flex; flex-direction:column; justify-content:center; }
+.signup-copy h2{ font-size:clamp(1.8rem,3.6vw,2.9rem); margin-bottom:12px; }
+.signup-copy p{ color:var(--muted); margin:0 0 24px; }
+.signup-form{ display:flex; gap:10px; flex-wrap:wrap; }
+.signup-form input{ flex:1 1 220px; background:var(--ink); border:1px solid var(--line); border-radius:100px; padding:15px 22px; color:var(--text); font-size:.95rem; transition:border-color .25s; }
+.signup-form input::placeholder{ color:var(--faint); }
+.signup-form input:focus{ border-color:var(--yellow); outline:none; }
+.signup-note{ font-size:.78rem; color:var(--faint); margin-top:14px; }
+@media (max-width:860px){
+  .signup-grid{ grid-template-columns:1fr; }
+  .signup-media{ min-height:200px; order:-1; }
+  .signup-form input{ flex-basis:100%; }
+  .signup-form .btn{ width:100%; }
+}
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+.footer{ border-top:1px solid var(--line); padding-top:clamp(48px,7vw,80px); }
+.footer-grid{ display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:36px 28px; padding-bottom:46px; }
+.footer h4{ font-family:var(--font-display); font-variation-settings:'wdth' 105,'wght' 800; font-size:.82rem; letter-spacing:.14em; text-transform:uppercase; color:var(--yellow); margin:0 0 16px; }
+.footer ul{ list-style:none; margin:0; padding:0; display:grid; gap:10px; }
+.footer li a,.footer li span{ color:var(--muted); font-size:.9rem; transition:color .2s; }
+.footer li a:hover{ color:var(--yellow); }
+.footer-logo img{ height:62px; width:auto; margin-bottom:16px; }
+.footer-blurb{ color:var(--faint); font-size:.88rem; max-width:34ch; margin:0 0 20px; }
+.socials{ display:flex; gap:10px; }
+.footer-bottom{ border-top:1px solid var(--line); padding:20px 0 32px; display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap; font-size:.82rem; color:var(--faint); }
+.today{ color:var(--yellow); font-weight:600; }
+@media (max-width:860px){ .footer-grid{ grid-template-columns:1fr 1fr; } }
+@media (max-width:520px){ .footer-grid{ grid-template-columns:1fr; gap:30px; } }
+
+/* ==========================================================================
+   TOASTS + REVEAL + MOBILE BAR
+   ========================================================================== */
+.toasts{ position:fixed; left:50%; transform:translateX(-50%); bottom:calc(20px + var(--bar-h)); z-index:98; display:grid; gap:8px; width:max-content; max-width:calc(100vw - 32px); pointer-events:none; }
+.toast{
+  background:var(--surface-3); border:1px solid var(--line-warm); color:var(--text);
+  padding:12px 20px; border-radius:100px; font-size:.88rem; font-weight:600;
+  display:flex; align-items:center; gap:10px;
+  animation:toastIn .3s var(--ease);
+}
+.toast svg{ color:var(--yellow); flex:none; }
+@keyframes toastIn{ from{ opacity:0; transform:translateY(12px); } }
+
+.reveal{ opacity:0; transform:translateY(24px); transition:opacity .7s var(--ease), transform .7s var(--ease); }
+.reveal.in{ opacity:1; transform:none; }
+@media (prefers-reduced-motion:reduce){
+  .reveal{ opacity:1; transform:none; transition:none; }
+  .card:hover,.quote:hover,.app:hover,.btn:hover,.tile:hover{ transform:none; }
+  .toast{ animation:none; }
+}
+
+.mobile-bar{
+  display:none; position:fixed; left:0; right:0; bottom:0; z-index:60;
+  background:rgba(10,11,14,.92); backdrop-filter:blur(16px);
+  border-top:1px solid var(--line); padding:11px 14px calc(11px + env(safe-area-inset-bottom)); gap:10px;
+}
+.mobile-bar .btn{ flex:1; }
+@media (max-width:700px){ .mobile-bar{ display:flex; } }
+</style>
+</head>
+<body>
+
+<div class="topbar" data-i18n="topbar">Entrega gratis en Brooklyn · Abierto todos los días desde las 11:00 AM</div>
+
+<!-- ========================== NAV ========================== -->
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="#top" class="nav-logo" aria-label="Go Picadera"><img src="assets/logo.png" alt="Go Picadera"></a>
+
+    <nav class="nav-links" aria-label="Principal">
+      <a href="#menu" data-i18n="nav.menu">Menú</a>
+      <a href="#catering" data-i18n="nav.catering">Catering</a>
+      <a href="#reviews" data-i18n="nav.reviews">Reseñas</a>
+      <a href="#delivery" data-i18n="nav.delivery">Delivery</a>
+      <a href="#visit" data-i18n="nav.visit">Visítanos</a>
+    </nav>
+
+    <div class="nav-actions">
+      <div class="lang" role="group" aria-label="Idioma / Language">
+        <button data-lang="es" aria-pressed="true">ES</button>
+        <button data-lang="en" aria-pressed="false">EN</button>
+      </div>
+      <button class="icon-btn cart-btn" id="cart-open" aria-label="Carrito">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg>
+        <span class="cart-count" id="cart-count">0</span>
+      </button>
+      <a href="#menu" class="btn btn-primary btn-sm" data-i18n="nav.order">Ordenar</a>
+      <button class="icon-btn nav-toggle" id="nav-toggle" aria-label="Menú" aria-expanded="false">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ========================== MOBILE NAV ========================== -->
+<div class="mobile-nav" id="mobile-nav" role="dialog" aria-modal="true" aria-label="Navegación">
+  <div class="mobile-nav-head">
+    <img src="assets/logo.png" alt="" style="height:46px">
+    <button class="icon-btn" id="nav-close" aria-label="Cerrar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <a class="mn-link" href="#menu" data-i18n="nav.menu">Menú</a>
+  <a class="mn-link" href="#catering" data-i18n="nav.catering">Catering</a>
+  <a class="mn-link" href="#reviews" data-i18n="nav.reviews">Reseñas</a>
+  <a class="mn-link" href="#delivery" data-i18n="nav.delivery">Delivery</a>
+  <a class="mn-link" href="#visit" data-i18n="nav.visit">Visítanos</a>
+  <div class="mobile-nav-foot">
+    <div class="lang" role="group" aria-label="Idioma" style="width:fit-content">
+      <button data-lang="es" aria-pressed="true">ES</button>
+      <button data-lang="en" aria-pressed="false">EN</button>
+    </div>
+    <a href="tel:+13474639911" class="btn btn-ghost">(347) 463-9911</a>
+    <a href="https://wa.me/19297058086" class="btn btn-primary">WhatsApp</a>
+  </div>
+</div>
+
+<!-- ========================== HERO ========================== -->
+<section class="hero" id="top">
+  <div class="hero-media">
+    <img src="https://gopicadera.com/hero-burger.png" alt="Hamburguesa especial de Go Picadera" fetchpriority="high">
+  </div>
+  <div class="hero-content shell">
+    <p class="eyebrow">Sabor de RD</p>
+    <h1 class="display"><span class="l1">Flow</span><span class="l2">de BK</span></h1>
+    <p class="hero-tagline" data-i18n="hero.tagline">Picadera dominicana de verdad en la 4th Ave. Chimis, yaroas, mofongos y pica pollo — hecho al momento, como en casa.</p>
+
+    <div class="hero-ctas">
+      <a href="#menu" class="btn btn-primary" data-i18n="hero.cta1">Ver el menú</a>
+      <a href="https://wa.me/19297058086" class="btn btn-ghost" data-i18n="hero.cta2">Ordenar por WhatsApp</a>
+    </div>
+
+    <div class="hero-facts">
+      <span class="status" id="status"><span class="dot"></span><span id="status-text">—</span></span>
+      <span class="rating-pill"><span class="stars">★★★★★</span><span class="score">4.9</span><span style="color:var(--muted)" data-i18n="hero.reviews">· 84 reseñas</span></span>
+      <a class="fact fact-link" href="https://maps.google.com/?q=4820+4th+Ave+Brooklyn+NY+11220" target="_blank" rel="noopener">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span><strong>4820 4th Ave</strong>, Brooklyn</span>
+        <svg class="fact-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span>Pica Pollo</span><span>Chimis</span><span>Yaroas</span><span>Mofongos</span><span>Empanadas</span><span>Kipes</span><span>Los Tres Golpes</span><span>Jugos Naturales</span>
+    <span>Pica Pollo</span><span>Chimis</span><span>Yaroas</span><span>Mofongos</span><span>Empanadas</span><span>Kipes</span><span>Los Tres Golpes</span><span>Jugos Naturales</span>
+  </div>
+</div>
+
+<!-- ========================== BEST SELLERS ========================== -->
+<section class="section" style="padding-bottom:0">
+  <div class="shell section-head reveal">
+    <div>
+      <p class="eyebrow" data-i18n="best.eyebrow">Los más pedidos</p>
+      <h2 class="display section-title" data-i18n="best.title">Lo que Brooklyn<br>no deja de pedir</h2>
+      <p class="section-sub" data-i18n="best.sub">Ranking real de la semana. Si es tu primera vez, empieza por aquí.</p>
+    </div>
+    <div class="rail-nav">
+      <button class="icon-btn" data-rail="prev" aria-label="Anterior"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <button class="icon-btn" data-rail="next" aria-label="Siguiente"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+    </div>
+  </div>
+  <div class="rail" id="rail"></div>
+</section>
+
+<!-- ========================== INTERACTIVE MENU ========================== -->
+<section class="section" id="menu">
+  <div class="shell">
+    <div class="section-head reveal">
+      <div>
+        <p class="eyebrow" data-i18n="menu.eyebrow">El menú completo</p>
+        <h2 class="display section-title" data-i18n="menu.title">Busca, filtra,<br>ordena</h2>
+        <p class="section-sub" data-i18n="menu.sub">Todo el menú con precios reales. Filtra por categoría o escribe lo que se te antoje.</p>
+      </div>
+    </div>
+
+    <div class="menu-tools">
+      <div class="search-wrap">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <label class="sr-only" for="menu-search">Buscar en el menú</label>
+        <input id="menu-search" type="search" placeholder="Buscar: chimi, mofongo, tostones…" autocomplete="off">
+      </div>
+      <div class="chips" id="chips" role="group" aria-label="Categorías"></div>
+    </div>
+
+    <p class="menu-count" id="menu-count"></p>
+    <div class="menu-grid" id="menu-grid"></div>
+    <div class="menu-empty" id="menu-empty" hidden>
+      <strong data-i18n="menu.emptyTitle">Nada por aquí</strong>
+      <span data-i18n="menu.emptyBody">Prueba con otra palabra o vuelve a “Todo”.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ========================== CATERING ========================== -->
+<section class="section" id="catering">
+  <div class="shell">
+    <div class="catering-grid reveal">
+      <div class="catering-video">
+        <video src="https://gopicadera.com/catering.mp4" autoplay muted loop playsinline aria-label="Parrilla de Go Picadera"></video>
+      </div>
+      <div class="catering-copy">
+        <span class="tag">Catering</span>
+        <h2 class="display" data-i18n="cat.title">Le damos<br>de comer a<br>tu fiesta</h2>
+        <p data-i18n="cat.body">Cumpleaños, bautizos, reuniones de trabajo o un domingo en familia. Llevamos la picadera completa a donde tú digas.</p>
+        <div class="party-item">
+          <img src="https://xjuwamydkrzxdxjezlwa.supabase.co/storage/v1/object/public/product-images/products/1783871398823-7aa1aa38-af09-428a-8a4f-8827117affef.jpg" alt="Pepito Venezolano de 3 pies">
+          <div>
+            <div class="pi-name">Pepito Venezolano</div>
+            <div class="pi-meta" data-i18n="cat.pepito">Sándwich de 3 pies · alcanza para 8</div>
+          </div>
+          <span class="price">$89.99</span>
+        </div>
+        <a href="https://wa.me/19297058086" class="btn btn-primary" style="width:fit-content" data-i18n="cat.cta">Cotizar por WhatsApp</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================== REVIEWS ========================== -->
+<section class="section" id="reviews">
+  <div class="shell">
+    <div class="section-head reveal">
+      <div>
+        <p class="eyebrow" data-i18n="rev.eyebrow">Lo que dice la gente</p>
+        <h2 class="display section-title" data-i18n="rev.title">Brooklyn<br>ya habló</h2>
+      </div>
+      <div class="score-card">
+        <div class="score-big">4.9</div>
+        <div class="score-divider"></div>
+        <div>
+          <span class="stars">★★★★★</span>
+          <p class="score-meta" data-i18n="rev.count">84 reseñas en Google</p>
+        </div>
+        <a href="https://www.google.com/search?q=Go+Picadera+Brooklyn" class="btn btn-ghost btn-sm" data-i18n="rev.cta">Ver en Google</a>
+      </div>
+    </div>
+
+    <div class="quote-grid">
+      <blockquote class="quote reveal"><span class="stars">★★★★★</span><p>Este lugar fue realmente increíble. Desde las entradas hasta las bebidas, los platos fuertes deliciosos y todo estaba preparado a la perfección.</p><div class="quote-author"><span class="avatar">CL</span><div><div class="qa-name">Carol Lizeth</div><div class="qa-when">Google</div></div></div></blockquote>
+      <blockquote class="quote reveal"><span class="stars">★★★★★</span><p>Muy bueno y las porciones son generosas.</p><div class="quote-author"><span class="avatar">DF</span><div><div class="qa-name">Dara Fernández</div><div class="qa-when">hace 4 meses</div></div></div></blockquote>
+      <blockquote class="quote reveal"><span class="stars">★★★★★</span><p>Excelente servicio al cliente y la comida estuvo muy sabrosa.</p><div class="quote-author"><span class="avatar">D</span><div><div class="qa-name">Dani</div><div class="qa-when">hace 5 meses</div></div></div></blockquote>
+      <blockquote class="quote reveal"><span class="stars">★★★★★</span><p>La comida está en su punto, muy deliciosa y el servicio excelente.</p><div class="quote-author"><span class="avatar">NJ</span><div><div class="qa-name">Nathaly Jiménez</div><div class="qa-when">hace 5 meses</div></div></div></blockquote>
+      <blockquote class="quote reveal"><span class="stars">★★★★★</span><p>Muy buena atención y el sabor fue excepcional.</p><div class="quote-author"><span class="avatar">ES</span><div><div class="qa-name">Edy Suarez</div><div class="qa-when">hace 5 meses</div></div></div></blockquote>
+    </div>
+  </div>
+</section>
+
+<!-- ========================== DELIVERY ========================== -->
+<section class="section" id="delivery">
+  <div class="shell">
+    <div class="delivery-direct reveal">
+      <div>
+        <h3 data-i18n="del.title">Ordena directo<br>y paga menos</h3>
+        <p data-i18n="del.body">Las apps cobran comisión y la suman a tu cuenta. Pidiendo aquí pagas el precio real.</p>
+      </div>
+      <a href="#menu" class="btn btn-dark" data-i18n="del.cta">Ordenar aquí</a>
+    </div>
+
+    <div class="apps-head"><span data-i18n="del.apps">¿Ya tienes una app instalada? También estamos ahí.</span></div>
+    <!--
+      LINK STATUS: DoorDash is a VERIFIED store URL. Uber Eats / Grubhub /
+      Seamless point at each platform's search page as a safe fallback.
+      Confirm the listings exist, then swap in real store URLs.
+    -->
+    <div class="apps reveal">
+      <a class="app" href="https://www.doordash.com/store/go-picadera-brooklyn-35709129/" target="_blank" rel="noopener"><span class="dot" style="background:#FF3008"></span> DoorDash</a>
+      <a class="app" href="https://www.ubereats.com/search?q=Go%20Picadera" target="_blank" rel="noopener"><span class="dot" style="background:#06C167"></span> Uber Eats</a>
+      <a class="app" href="https://www.grubhub.com/search?queryText=Go%20Picadera" target="_blank" rel="noopener"><span class="dot" style="background:#F63440"></span> Grubhub</a>
+      <a class="app" href="https://www.seamless.com/search?queryText=Go%20Picadera" target="_blank" rel="noopener"><span class="dot" style="background:#25A2AA"></span> Seamless</a>
+    </div>
+  </div>
+</section>
+
+<!-- ========================== SIGNUP ========================== -->
+<section class="section" style="padding-top:0">
+  <div class="shell">
+    <div class="signup-grid reveal">
+      <div class="signup-copy">
+        <span class="tag" data-i18n="promo.tag">Promoción</span>
+        <h2 class="display" data-i18n="promo.title">¿Quieres<br>comida gratis?</h2>
+        <p data-i18n="promo.body">Regístrate y recibe promociones, platos nuevos y beneficios que no publicamos en ningún otro lado.</p>
+        <form class="signup-form" id="signup-form">
+          <label class="sr-only" for="email">Correo electrónico</label>
+          <input id="email" type="email" placeholder="tu@correo.com" required>
+          <button type="submit" class="btn btn-primary" data-i18n="promo.cta">Registrarme</button>
+        </form>
+        <p class="signup-note" data-i18n="promo.note">También puedes escribirnos por WhatsApp al (929) 705-8086.</p>
+      </div>
+      <div class="signup-media"><img src="https://gopicadera.com/signup-food.jpg" alt="Bandeja de hamburguesas de Go Picadera"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================== FOOTER ========================== -->
+<footer class="footer" id="visit">
+  <div class="shell">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo"><img src="assets/logo.png" alt="Go Picadera"></div>
+        <p class="footer-blurb" data-i18n="foot.blurb">Comida rápida dominicana en el corazón de Sunset Park. Sabor de RD, flow de BK.</p>
+        <div class="socials">
+          <a class="icon-btn" href="https://www.instagram.com/gopicadera/" target="_blank" rel="noopener" aria-label="Instagram"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+          <a class="icon-btn" href="https://www.tiktok.com/@gopicadera" target="_blank" rel="noopener" aria-label="TikTok"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 2h-3v13.2a2.7 2.7 0 1 1-2.2-2.65V9.5a5.8 5.8 0 1 0 5.2 5.77V8.9a6.5 6.5 0 0 0 3.8 1.22V7.06A3.6 3.6 0 0 1 16.5 2z"/></svg></a>
+          <a class="icon-btn" href="https://wa.me/19297058086" target="_blank" rel="noopener" aria-label="WhatsApp"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .1-1.7-.1-.4-.1-.9-.3-1.5-.6-2.7-1.2-4.4-3.9-4.6-4.1-.1-.2-1-1.4-1-2.6s.6-1.8.9-2.1c.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 1.9c.1.2.1.4 0 .5l-.4.5-.3.3c-.1.1-.2.3 0 .5.2.3.8 1.3 1.7 2.1 1.1 1 2 1.3 2.3 1.4.2.1.4.1.5-.1l.7-.8c.2-.2.3-.2.5-.1l1.8.9c.2.1.4.2.5.3z"/></svg></a>
+        </div>
+      </div>
+
+      <div>
+        <h4 data-i18n="foot.menu">Menú</h4>
+        <ul id="footer-cats"></ul>
+      </div>
+
+      <div>
+        <h4 data-i18n="foot.contact">Contacto</h4>
+        <ul>
+          <li><a href="tel:+13474639911">(347) 463-9911</a></li>
+          <li><a href="https://wa.me/19297058086">WhatsApp (929) 705-8086</a></li>
+          <li><a href="https://maps.google.com/?q=4820+4th+Ave+Brooklyn+NY+11220" target="_blank" rel="noopener">4820 4th Ave<br>Brooklyn, NY 11220</a></li>
+          <li><a href="https://www.instagram.com/gopicadera/">@gopicadera</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 data-i18n="foot.hours">Horario</h4>
+        <!-- TODO: confirm real opening hours with the client before launch -->
+        <ul id="hours-list"></ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 Go Picadera.</span>
+      <span>Hecho en Brooklyn 🇩🇴</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ========================== OVERLAYS ========================== -->
+<div class="overlay" id="overlay"></div>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <button class="modal-close" id="modal-close" aria-label="Cerrar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+  <div class="modal-media"><img id="modal-img" src="" alt=""></div>
+  <div class="modal-body">
+    <h3 id="modal-title"></h3>
+    <p class="modal-desc" id="modal-desc"></p>
+    <div class="opt-note" id="modal-opt" hidden></div>
+    <div class="modal-foot">
+      <div class="qty">
+        <button id="qty-minus" aria-label="Menos">−</button>
+        <span id="qty-val">1</span>
+        <button id="qty-plus" aria-label="Más">+</button>
+      </div>
+      <button class="btn btn-primary" id="modal-add"></button>
+    </div>
+  </div>
+</div>
+
+<aside class="cart" id="cart" role="dialog" aria-modal="true" aria-labelledby="cart-title">
+  <div class="cart-head">
+    <h2 id="cart-title" data-i18n="cart.title">Tu pedido</h2>
+    <button class="icon-btn" id="cart-close" aria-label="Cerrar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+  </div>
+  <div class="cart-items" id="cart-items"></div>
+  <div class="cart-foot" id="cart-foot" hidden>
+    <div class="mode-toggle" role="group" aria-label="Entrega o recogida">
+      <button data-mode="delivery" aria-pressed="true" data-i18n="cart.delivery">Entrega</button>
+      <button data-mode="pickup" aria-pressed="false" data-i18n="cart.pickup">Recoger</button>
+    </div>
+    <div class="totals">
+      <div><span data-i18n="cart.sub">Subtotal</span><span id="t-sub">$0.00</span></div>
+      <div><span data-i18n="cart.tax">Impuesto (8.875%)</span><span id="t-tax">$0.00</span></div>
+      <div id="fee-row"><span data-i18n="cart.fee">Entrega</span><span id="t-fee">Gratis</span></div>
+      <div class="grand"><span data-i18n="cart.total">Total</span><span id="t-total">$0.00</span></div>
+    </div>
+    <button class="btn btn-primary btn-block" id="checkout" data-i18n="cart.checkout">Enviar pedido por WhatsApp</button>
+    <p class="cart-note" data-i18n="cart.note">Te confirmamos por WhatsApp antes de cocinar.</p>
+  </div>
+</aside>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<div class="mobile-bar">
+  <button class="btn btn-ghost btn-sm" id="bar-cart"><span data-i18n="bar.cart">Carrito</span> · <span id="bar-count">0</span></button>
+  <a href="#menu" class="btn btn-primary btn-sm" data-i18n="bar.order">Ordenar ahora</a>
+</div>
+
+<script>
+/* ==========================================================================
+   MENU DATA — scraped from the live Supabase catalog.
+   Items with `opt:true` are the ones the live site shows as "Personalizar"
+   instead of a price, because they carry a meat/filling choice. Nothing here
+   is invented: names, prices and photos are all theirs.
+   ========================================================================== */
+const S = "https://xjuwamydkrzxdxjezlwa.supabase.co/storage/v1/object/public/product-images/products/";
+
+const CATEGORIES = [
+  { slug:"desayuno",   es:"Desayuno",     en:"Breakfast" },
+  { slug:"sandwiches", es:"Sándwiches",   en:"Sandwiches" },
+  { slug:"mofongos",   es:"Mofongos",     en:"Mofongos" },
+  { slug:"ordenes",    es:"Órdenes",      en:"Plates" },
+  { slug:"yaroas",     es:"Yaroas",       en:"Yaroas" },
+  { slug:"pastas",     es:"Pastas",       en:"Pasta" },
+  { slug:"tacos",      es:"Tacos y más",  en:"Tacos & More" },
+  { slug:"ensaladas",  es:"Ensaladas",    en:"Salads" },
+  { slug:"sides",      es:"Acompañantes", en:"Sides" },
+  { slug:"jugos",      es:"Jugos",        en:"Fresh Juices" },
+  { slug:"bebidas",    es:"Bebidas",      en:"Drinks" }
+];
+
+const PRODUCTS = [
+  { id:"empanadas", cat:"desayuno", name:"Empanadas", price:3.00, img:S+"1782699179835-2494aea5-c0b6-4706-bf23-aa63681a20ad.jpg",
+    es:"Crujientes, recién hechas. Perfectas para un evento o un antojo rápido.", en:"Crisp and freshly made. Perfect for an event or a quick craving." },
+  { id:"tresgolpes", cat:"desayuno", name:"Los Tres Golpes", price:8.99, rank:5, img:S+"1783867778112-fb63f0ac-dd5c-49e2-a2f7-a4c4c0dd7b3f.jpg",
+    es:"El desayuno dominicano de siempre: mangú, huevo, queso frito y salami.", en:"The classic Dominican breakfast: mangú, egg, fried cheese and salami." },
+  { id:"kipes", cat:"desayuno", name:"Kipes", price:2.99, rank:6, img:S+"1782699210091-d88bd0de-10ed-494b-8185-a823b3321e6f.jpg",
+    es:"Crujientes por fuera, jugosos por dentro. El picadera clásico.", en:"Crunchy outside, juicy inside. The classic picadera bite." },
+
+  { id:"chimi", cat:"sandwiches", name:"Chimi Dominicano", price:10.99, rank:1, img:S+"1783873492128-4f8f4bcf-c4b9-4301-b6be-c7800a51aaf2.jpg",
+    es:"Repollo, cebolla, tomate, ketchup y mayonesa. Elige tu carne: pollo, res o pernil.", en:"Cabbage, onion, tomato, ketchup and mayo. Choose chicken, beef or pernil." },
+  { id:"cheeseburger", cat:"sandwiches", name:"Cheese Burger Combo", price:13.99, rank:4, img:S+"1783871299813-54b381a6-ba91-4e16-9906-09ac73ccb5dd.jpg",
+    es:"Hamburguesa con queso, papas fritas y bebida.", en:"Cheeseburger with fries and a drink." },
+  { id:"hotdog", cat:"sandwiches", name:"Hot Dog Dominicano", price:9.99, rank:3, img:S+"1783872497552-de06b61c-9075-4781-82c0-3bab8dcca2ba.jpg",
+    es:"Salchicha, repollo, maíz, carne molida, queso y salsas.", en:"Sausage, cabbage, corn, ground beef, cheese and sauces." },
+  { id:"cubano", cat:"sandwiches", name:"Cuban Sandwich", price:13.99, img:S+"1783871589385-c22207a4-701b-474d-9023-f73bebbe4af4.jpg",
+    es:"Pernil, jamón, queso y pepinillos. Viene con papas fritas.", en:"Pernil, ham, cheese and pickles. Comes with fries." },
+  { id:"specialburger", cat:"sandwiches", name:"Special Burger", price:15.99, rank:2, img:S+"1783871356882-5e6d519e-031e-457b-82b9-215feec541a4.jpg",
+    es:"Carne artesanal, queso, bacon, huevo, tomate, lechuga, cebolla y maduro. Con papas.", en:"Homemade patty, cheese, bacon, egg, tomato, lettuce, onion and sweet plantain. With fries." },
+  { id:"clubsandwich", cat:"sandwiches", name:"Club Sandwich Combo", price:14.99, img:S+"1783871560498-a57610c0-84bf-4426-80b2-fcbf608c5028.jpg",
+    es:"Pollo, jamón, queso, lechuga y tomate. Con papas y refresco.", en:"Chicken, ham, cheese, lettuce and tomato. With fries and a soda." },
+  { id:"pepito", cat:"sandwiches", name:"Pepito Venezolano", price:89.99, party:true, img:S+"1783871398823-7aa1aa38-af09-428a-8a4f-8827117affef.jpg",
+    es:"Sándwich de 3 pies para 8 personas. Tomate, lechuga, queso, cebolla y tu carne preferida.", en:"3-foot sandwich that feeds 8. Tomato, lettuce, cheese, onion and your choice of meat." },
+
+  { id:"mofongo", cat:"mofongos", name:"Mofongo Tradicional", opt:true, img:S+"1783868038080-0a6b09bb-5a3b-4a1f-b239-6572bd6916da.jpg",
+    es:"Plátano verde majado con ajo. Elige pollo, res, pernil o camarón.", en:"Mashed green plantain with garlic. Choose chicken, beef, pernil or shrimp." },
+  { id:"threefongo", cat:"mofongos", name:"Three-fongo", opt:true, img:S+"1783868022636-90e5d79d-1742-411e-9b85-4716c526ec34.jpg",
+    es:"Plátano verde, yuca y maduro con ajo y mantequilla.", en:"Green plantain, yuca and sweet plantain with garlic and butter." },
+  { id:"mofonguito", cat:"mofongos", name:"Mofonguito", opt:true, img:S+"1783867975873-dad2bba0-335e-44e9-a959-059f269810be.jpg",
+    es:"Cazuelitas de plátano listas para el relleno que prefieras.", en:"Little plantain cups ready for the filling of your choice." },
+  { id:"patacon", cat:"mofongos", name:"Patacón", opt:true, img:S+"1783868007422-66ee586f-9cce-4997-a7c4-7c738b142a5d.jpg",
+    es:"Plátano verde frito como base y tapa. Crujiente de punta a punta.", en:"Fried green plantain as base and lid. Crunchy end to end." },
+
+  { id:"pechurinas", cat:"ordenes", name:"Pechurinas", opt:true, img:S+"1783869215788-a7c42664-cb72-425b-85e7-a345c15b2588.jpg", es:"", en:"" },
+  { id:"shrimp", cat:"ordenes", name:"Camarones", price:17.99, img:S+"1783868450962-352d6183-552f-427f-8f4b-7f322df84cb1.jpg", es:"", en:"" },
+  { id:"morsilla", cat:"ordenes", name:"Morcilla", price:17.99, img:S+"1783868208601-d8175603-da2b-4788-a458-1faf62610826.jpg", es:"", en:"" },
+  { id:"chuleta", cat:"ordenes", name:"Chuleta Ahumada", price:17.99, img:S+"1783868140873-416e381d-e4f3-44f6-a101-e68f4bcdb11b.jpg", es:"", en:"" },
+  { id:"snapper", cat:"ordenes", name:"Red Snapper", price:23.99, img:S+"1783868410910-b2ea4ad1-a6f3-453d-a5a4-b79e725e3cc0.jpg", es:"", en:"" },
+  { id:"steak", cat:"ordenes", name:"Steak", price:17.99, img:S+"1783868494099-3ec3f497-1c08-4568-87ff-82f4933c0744.jpg", es:"", en:"" },
+  { id:"orejita", cat:"ordenes", name:"Orejita", price:17.99, img:S+"1783868241788-19e006aa-71d1-4fba-81c6-b2b818087506.jpg", es:"", en:"" },
+  { id:"longaniza", cat:"ordenes", name:"Longaniza", price:17.99, img:S+"1783868171547-cdd98cb2-3d6e-46c5-9b13-1cd3bbfa1130.jpg", es:"", en:"" },
+  { id:"chicharron", cat:"ordenes", name:"Chicharrón de Cerdo", price:15.99, img:S+"1783868079708-8352f864-f2d4-41f8-b13a-73bc69ad6e50.jpg", es:"", en:"" },
+
+  { id:"yaroafries", cat:"yaroas", name:"Yaroa Mix de Papas", opt:true, img:S+"1783870778008-992f8b82-5132-4404-9a51-aabbb6f923ec.jpg",
+    es:"Papas fritas, carne, queso derretido y salsas.", en:"Fries layered with meat, melted cheese and sauces." },
+  { id:"yaroasweet", cat:"yaroas", name:"Yaroa de Maduro", opt:true, img:S+"1783870849645-765ebf61-0004-458b-982b-adbc54deddf9.jpg",
+    es:"Plátano maduro, carne, queso derretido y salsas.", en:"Sweet plantain, meat, melted cheese and sauces." },
+  { id:"yaroamix", cat:"yaroas", name:"Yaroa Mixta", opt:true, img:S+"1783870803659-fcb10fee-5811-426a-a6cf-65dce1ffeef1.jpg",
+    es:"Papa y maduro juntos. Lo mejor de los dos mundos.", en:"Fries and sweet plantain together. Best of both." },
+  { id:"salchipapa", cat:"yaroas", name:"Salchipapa", price:10.99, img:S+"1783870829088-44cbd20e-d873-4c4a-9818-aaed906855bc.jpg", es:"", en:"" },
+
+  { id:"alfredo", cat:"pastas", name:"Alfredo de Pollo y Camarón", price:16.99, img:S+"1783870956651-d9ade5da-c946-4044-887e-4667262cd05a.jpg", es:"", en:"" },
+  { id:"quesadillas", cat:"tacos", name:"Quesadillas", opt:true, img:S+"1783874121339-6ce074d7-e04b-43da-9d7c-70626b1e0872.jpg", es:"", en:"" },
+
+  { id:"greensalad", cat:"ensaladas", name:"Ensalada Verde", price:7.99, img:S+"1783870671074-d94c41ec-3bbb-450e-a254-43b759c27fc7.jpg", es:"", en:"" },
+  { id:"cesar", cat:"ensaladas", name:"Ensalada César con Pollo", price:11.99, img:S+"1783870650300-97b83810-d3e7-446d-9f89-8817853d2abb.jpg", es:"", en:"" },
+
+  { id:"fries", cat:"sides", name:"Papas Fritas", price:3.99, img:S+"1783873560058-74544316-933b-4463-8c20-ee986fd370cc.jpg", es:"", en:"" },
+  { id:"yuca", cat:"sides", name:"Yuca", price:4.99, img:S+"1783873703067-282e9057-6ec6-41b1-88fe-8138e4d1eb5a.jpg", es:"", en:"" },
+  { id:"tostones", cat:"sides", name:"Tostones", price:4.99, img:S+"1783873688815-612db2c8-8394-4f72-80e9-a66cddb066d4.jpg", es:"", en:"" },
+  { id:"batata", cat:"sides", name:"Batata", price:7.99, img:S+"1783872053010-6836437e-4704-42fa-b95e-870f2e448c74.jpg", es:"", en:"" },
+  { id:"guandules", cat:"sides", name:"Guandules", price:4.99, img:S+"1783873573124-e5b98c6b-fb49-459c-a5e2-3ec4e659691a.jpg", es:"", en:"" },
+
+  { id:"chinola", cat:"jugos", name:"Chinola", price:4.00, img:S+"1783870177081-cbfe72a9-a41f-4eac-903d-47123f9d4dc8.jpg", es:"Jugo natural de maracuyá.", en:"Fresh passion fruit juice." },
+  { id:"limon", cat:"jugos", name:"Limón", price:4.00, img:S+"1783870253316-7ee0cef9-3194-4deb-b63c-16b04ab9327d.jpg", es:"Limonada natural.", en:"Fresh lemonade." },
+  { id:"tamarindo", cat:"jugos", name:"Tamarindo", price:6.00, img:S+"1783870313736-de48e17f-3dd3-4223-98c4-3b69ea72b152.jpg", es:"Jugo natural de tamarindo.", en:"Fresh tamarind juice." },
+
+  { id:"soda", cat:"bebidas", name:"Refresco", price:2.00, img:S+"1783875995438-03351f88-de10-4f77-88aa-f9164bdc670d.jpg", es:"", en:"" },
+  { id:"water", cat:"bebidas", name:"Agua", price:1.50, img:S+"1783876026623-c2908c81-5da9-4ecc-a33d-cfda1d33acca.jpg", es:"", en:"" },
+  { id:"presidente", cat:"bebidas", name:"Presidente", price:5.00, img:S+"1783875889734-e69fdd8e-44af-4d37-8a1b-30546c24731f.jpg", es:"", en:"" },
+  { id:"coors", cat:"bebidas", name:"Coors Light", price:5.00, img:S+"1783875333581-3042d044-8885-4a29-917e-6fb09ba9a245.jpg", es:"", en:"" },
+  { id:"corona", cat:"bebidas", name:"Corona", price:5.00, img:S+"1783875112272-3a5bd744-ddfa-4b1b-b11a-81a41cce0480.jpg", es:"", en:"" },
+  { id:"modelo", cat:"bebidas", name:"Modelo", price:5.00, img:S+"1783875512038-41140888-36f4-4a5a-8f0b-0cb3cc337f7c.jpg", es:"", en:"" },
+  { id:"heineken", cat:"bebidas", name:"Heineken", price:5.00, img:S+"1783874965091-075a7421-91a4-4425-9c4e-9c76c261e1d2.jpg", es:"", en:"" }
+];
+
+/* ==========================================================================
+   I18N — the live site mixes Spanish and English mid-section with no logic.
+   Here both languages are complete and the visitor chooses.
+   ========================================================================== */
+const I18N = {
+  es:{
+    "topbar":"Entrega gratis en Brooklyn · Abierto todos los días desde las 11:00 AM",
+    "nav.menu":"Menú","nav.catering":"Catering","nav.reviews":"Reseñas","nav.delivery":"Delivery","nav.visit":"Visítanos","nav.order":"Ordenar",
+    "hero.tagline":"Picadera dominicana de verdad en la 4th Ave. Chimis, yaroas, mofongos y pica pollo — hecho al momento, como en casa.",
+    "hero.cta1":"Ver el menú","hero.cta2":"Ordenar por WhatsApp","hero.reviews":"· 84 reseñas",
+    "best.eyebrow":"Los más pedidos","best.title":"Lo que Brooklyn<br>no deja de pedir","best.sub":"Ranking real de la semana. Si es tu primera vez, empieza por aquí.",
+    "menu.eyebrow":"El menú completo","menu.title":"Busca, filtra,<br>ordena","menu.sub":"Todo el menú con precios reales. Filtra por categoría o escribe lo que se te antoje.",
+    "menu.all":"Todo","menu.search":"Buscar: chimi, mofongo, tostones…",
+    "menu.emptyTitle":"Nada por aquí","menu.emptyBody":"Prueba con otra palabra o vuelve a “Todo”.",
+    "menu.count":"{n} platos","menu.custom":"Personalizar","menu.new":"Top",
+    "cat.title":"Le damos<br>de comer a<br>tu fiesta","cat.body":"Cumpleaños, bautizos, reuniones de trabajo o un domingo en familia. Llevamos la picadera completa a donde tú digas.",
+    "cat.pepito":"Sándwich de 3 pies · alcanza para 8","cat.cta":"Cotizar por WhatsApp",
+    "rev.eyebrow":"Lo que dice la gente","rev.title":"Brooklyn<br>ya habló","rev.count":"84 reseñas en Google","rev.cta":"Ver en Google",
+    "del.title":"Ordena directo<br>y paga menos","del.body":"Las apps cobran comisión y la suman a tu cuenta. Pidiendo aquí pagas el precio real.","del.cta":"Ordenar aquí","del.apps":"¿Ya tienes una app instalada? También estamos ahí.",
+    "promo.tag":"Promoción","promo.title":"¿Quieres<br>comida gratis?","promo.body":"Regístrate y recibe promociones, platos nuevos y beneficios que no publicamos en ningún otro lado.","promo.cta":"Registrarme","promo.note":"También puedes escribirnos por WhatsApp al (929) 705-8086.",
+    "foot.blurb":"Comida rápida dominicana en el corazón de Sunset Park. Sabor de RD, flow de BK.","foot.menu":"Menú","foot.contact":"Contacto","foot.hours":"Horario",
+    "cart.title":"Tu pedido","cart.delivery":"Entrega","cart.pickup":"Recoger","cart.sub":"Subtotal","cart.tax":"Impuesto (8.875%)","cart.fee":"Entrega","cart.total":"Total",
+    "cart.checkout":"Enviar pedido por WhatsApp","cart.note":"Te confirmamos por WhatsApp antes de cocinar.","cart.empty":"Tu carrito está vacío","cart.free":"Gratis",
+    "bar.cart":"Carrito","bar.order":"Ordenar ahora",
+    "add":"Agregar","added":"agregado al carrito","optNote":"Este plato lleva opciones (carne, relleno). Lo confirmamos contigo por WhatsApp.",
+    "open":"Abierto ahora","closed":"Cerrado ahora","closesAt":"cierra a las","opensAt":"abre a las","signup":"¡Listo! Te escribimos pronto.",
+    "days":["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"],
+    "waIntro":"¡Hola Go Picadera! Quiero hacer un pedido:","waMode":"Modo","waTotal":"Total estimado"
+  },
+  en:{
+    "topbar":"Free delivery in Brooklyn · Open daily from 11:00 AM",
+    "nav.menu":"Menu","nav.catering":"Catering","nav.reviews":"Reviews","nav.delivery":"Delivery","nav.visit":"Visit us","nav.order":"Order",
+    "hero.tagline":"Real Dominican picadera on 4th Ave. Chimis, yaroas, mofongos and pica pollo — made to order, like home.",
+    "hero.cta1":"See the menu","hero.cta2":"Order on WhatsApp","hero.reviews":"· 84 reviews",
+    "best.eyebrow":"Most ordered","best.title":"What Brooklyn<br>keeps ordering","best.sub":"This week's real ranking. First time here? Start with these.",
+    "menu.eyebrow":"The full menu","menu.title":"Search, filter,<br>order","menu.sub":"The full menu with real prices. Filter by category or just type what you're craving.",
+    "menu.all":"All","menu.search":"Search: chimi, mofongo, tostones…",
+    "menu.emptyTitle":"Nothing here","menu.emptyBody":"Try another word or go back to “All”.",
+    "menu.count":"{n} dishes","menu.custom":"Customize","menu.new":"Top",
+    "cat.title":"We feed<br>your whole<br>party","cat.body":"Birthdays, christenings, work lunches or a Sunday with family. We bring the full picadera wherever you say.",
+    "cat.pepito":"3-foot sandwich · feeds 8","cat.cta":"Get a quote on WhatsApp",
+    "rev.eyebrow":"What people say","rev.title":"Brooklyn<br>has spoken","rev.count":"84 Google reviews","rev.cta":"See on Google",
+    "del.title":"Order direct<br>and pay less","del.body":"The apps charge commission and pass it to you. Ordering here means the real price.","del.cta":"Order here","del.apps":"Already have an app? We're there too.",
+    "promo.tag":"Promo","promo.title":"Want<br>free food?","promo.body":"Sign up for promos, new dishes and perks we don't post anywhere else.","promo.cta":"Sign me up","promo.note":"Or just message us on WhatsApp at (929) 705-8086.",
+    "foot.blurb":"Dominican fast food in the heart of Sunset Park. Sabor de RD, flow de BK.","foot.menu":"Menu","foot.contact":"Contact","foot.hours":"Hours",
+    "cart.title":"Your order","cart.delivery":"Delivery","cart.pickup":"Pickup","cart.sub":"Subtotal","cart.tax":"Tax (8.875%)","cart.fee":"Delivery","cart.total":"Total",
+    "cart.checkout":"Send order on WhatsApp","cart.note":"We'll confirm on WhatsApp before we cook.","cart.empty":"Your cart is empty","cart.free":"Free",
+    "bar.cart":"Cart","bar.order":"Order now",
+    "add":"Add","added":"added to cart","optNote":"This dish has options (meat, filling). We'll confirm them with you on WhatsApp.",
+    "open":"Open now","closed":"Closed now","closesAt":"closes at","opensAt":"opens at","signup":"Done! We'll be in touch.",
+    "days":["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
+    "waIntro":"Hi Go Picadera! I'd like to place an order:","waMode":"Mode","waTotal":"Estimated total"
+  }
+};
+
+/* Opening hours, indexed by JS day (0 = Sunday). `close` > 24 means past
+   midnight. TODO: confirm these with the client before launch. */
+const HOURS = [
+  {open:11, close:23}, {open:11, close:23}, {open:11, close:23}, {open:11, close:23},
+  {open:11, close:23}, {open:11, close:25}, {open:11, close:25}
+];
+
+const WHATSAPP = "19297058086";
+const TAX = 0.08875;
+
+/* ========================================================================== */
+const $  = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+const money = n => "$" + n.toFixed(2);
+
+/* localStorage throws on opaque origins (data: URLs, some sandboxed frames)
+   and in Safari private mode. Every access goes through this so a storage
+   failure can never take the whole page down with it. */
+const store = {
+  get(k){ try { return localStorage.getItem(k); } catch(e){ return null; } },
+  set(k,v){ try { localStorage.setItem(k,v); } catch(e){} }
+};
+
+let lang = store.get("gp-lang") || "es";
+let cart = new Map();
+let activeCat = "all";
+let query = "";
+let mode = "delivery";
+let modalItem = null, modalQty = 1, lastFocus = null;
+
+try { cart = new Map(JSON.parse(store.get("gp-cart") || "[]")); } catch(e){}
+
+const t = k => (I18N[lang] && I18N[lang][k]) ?? k;
+const saveCart = () => store.set("gp-cart", JSON.stringify([...cart]));
+
+/* ---- i18n ---------------------------------------------------------------*/
+function applyLang(){
+  document.documentElement.lang = lang;
+  $$("[data-i18n]").forEach(el => {
+    const v = I18N[lang][el.dataset.i18n];
+    if (v != null) el.innerHTML = v;
+  });
+  $$(".lang button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.lang === lang)));
+  $("#menu-search").placeholder = t("menu.search");
+  store.set("gp-lang", lang);
+  renderChips(); renderMenu(); renderRail(); renderCart(); renderHours(); renderStatus(); renderFooterCats();
+}
+
+/* ---- open / closed ------------------------------------------------------*/
+function nyNow(){
+  return new Date(new Date().toLocaleString("en-US", { timeZone:"America/New_York" }));
+}
+function statusNow(){
+  const d = nyNow();
+  const mins = d.getHours()*60 + d.getMinutes();
+  const today = HOURS[d.getDay()];
+  const yday  = HOURS[(d.getDay()+6)%7];
+  // still inside yesterday's post-midnight tail?
+  if (yday.close > 24 && mins < (yday.close-24)*60) return { open:true, until:(yday.close-24)*60 };
+  if (mins >= today.open*60 && mins < Math.min(today.close,24)*60) return { open:true, until:today.close*60 };
+  if (mins < today.open*60) return { open:false, next:today.open*60 };
+  return { open:false, next:HOURS[(d.getDay()+1)%7].open*60 };
+}
+function fmtTime(mins){
+  let h = Math.floor(mins/60) % 24, m = mins % 60;
+  const ap = h >= 12 ? "PM" : "AM";
+  const h12 = h % 12 === 0 ? 12 : h % 12;
+  return h12 + (m ? ":" + String(m).padStart(2,"0") : "") + " " + ap;
+}
+function renderStatus(){
+  const s = statusNow(), el = $("#status");
+  el.className = "status " + (s.open ? "open" : "closed");
+  $("#status-text").textContent = s.open
+    ? `${t("open")} · ${t("closesAt")} ${fmtTime(s.until)}`
+    : `${t("closed")} · ${t("opensAt")} ${fmtTime(s.next)}`;
+}
+function renderHours(){
+  const d = nyNow().getDay();
+  $("#hours-list").innerHTML = HOURS.map((h,i) =>
+    `<li><span class="${i===d ? "today" : ""}">${t("days")[i]} · ${fmtTime(h.open*60)} – ${fmtTime(h.close*60)}</span></li>`
+  ).join("") + `<li><span style="color:var(--yellow);font-weight:600">${lang==="es"?"Entrega gratis en Brooklyn":"Free delivery in Brooklyn"}</span></li>`;
+}
+function renderFooterCats(){
+  $("#footer-cats").innerHTML = CATEGORIES.slice(0,6)
+    .map(c => `<li><a href="#menu" data-jump="${c.slug}">${c[lang]}</a></li>`).join("");
+}
+
+/* ---- rendering ----------------------------------------------------------*/
+function priceHTML(p){
+  return p.opt
+    ? `<span class="price opt">${t("menu.custom")} →</span>`
+    : `<span class="price">${money(p.price)}</span>`;
+}
+const plusIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>`;
+
+function renderRail(){
+  const top = PRODUCTS.filter(p => p.rank).sort((a,b) => a.rank - b.rank);
+  $("#rail").innerHTML = top.map(p => `
+    <article class="card reveal">
+      <button class="card-media" data-open="${p.id}" aria-label="${p.name}">
+        <span class="rank">${String(p.rank).padStart(2,"0")}</span>
+        <img src="${p.img}" alt="${p.name}" loading="lazy">
+      </button>
+      <div class="card-body">
+        <h3 class="card-name">${p.name}</h3>
+        <p class="card-desc">${p[lang] || ""}</p>
+        <div class="card-foot">
+          ${priceHTML(p)}
+          <button class="add-btn" data-add="${p.id}" aria-label="${t("add")} ${p.name}">${plusIcon}</button>
+        </div>
+      </div>
+    </article>`).join("");
+  observeReveals();
+}
+
+function renderChips(){
+  $("#chips").innerHTML =
+    `<button class="chip" data-cat="all" aria-pressed="${activeCat==="all"}">${t("menu.all")}</button>` +
+    CATEGORIES.map(c => `<button class="chip" data-cat="${c.slug}" aria-pressed="${activeCat===c.slug}">${c[lang]}</button>`).join("");
+}
+
+function filtered(){
+  const q = query.trim().toLowerCase();
+  return PRODUCTS.filter(p => {
+    if (activeCat !== "all" && p.cat !== activeCat) return false;
+    if (!q) return true;
+    return (p.name + " " + (p.es||"") + " " + (p.en||"")).toLowerCase().includes(q);
+  });
+}
+
+function renderMenu(){
+  const list = filtered();
+  $("#menu-count").textContent = t("menu.count").replace("{n}", list.length);
+  $("#menu-empty").hidden = list.length > 0;
+  $("#menu-grid").innerHTML = list.map(p => `
+    <article class="tile">
+      <button class="tile-media" data-open="${p.id}" aria-label="${p.name}">
+        ${p.rank ? `<span class="badge">${t("menu.new")}</span>` : ""}
+        ${p.party ? `<span class="badge party">Party</span>` : ""}
+        <img src="${p.img}" alt="${p.name}" loading="lazy">
+      </button>
+      <div class="tile-body">
+        <h3 class="tile-name">${p.name}</h3>
+        <div class="tile-foot">
+          ${priceHTML(p)}
+          <button class="add-btn" data-add="${p.id}" aria-label="${t("add")} ${p.name}">${plusIcon}</button>
+        </div>
+      </div>
+    </article>`).join("");
+}
+
+/* ---- cart ---------------------------------------------------------------*/
+function cartCount(){ return [...cart.values()].reduce((a,b) => a+b, 0); }
+function subtotal(){
+  let s = 0;
+  cart.forEach((qty,id) => {
+    const p = PRODUCTS.find(x => x.id === id);
+    if (p && !p.opt) s += p.price * qty;
+  });
+  return s;
+}
+function addToCart(id, qty=1){
+  cart.set(id, (cart.get(id) || 0) + qty);
+  saveCart(); renderCart();
+  const p = PRODUCTS.find(x => x.id === id);
+  toast(`${p.name} ${t("added")}`);
+}
+function setQty(id, q){
+  if (q <= 0) cart.delete(id); else cart.set(id, q);
+  saveCart(); renderCart();
+}
+function renderCart(){
+  const n = cartCount();
+  $("#cart-count").textContent = n;
+  $("#cart-count").classList.toggle("on", n > 0);
+  $("#bar-count").textContent = n;
+
+  if (!n){
+    $("#cart-items").innerHTML = `<div class="cart-empty">
+      <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg>
+      <p>${t("cart.empty")}</p></div>`;
+    $("#cart-foot").hidden = true;
+    return;
+  }
+
+  $("#cart-items").innerHTML = [...cart].map(([id,q]) => {
+    const p = PRODUCTS.find(x => x.id === id);
+    if (!p) return "";
+    return `<div class="ci">
+      <img src="${p.img}" alt="">
+      <div>
+        <div class="ci-name">${p.name}</div>
+        <div class="ci-price">${p.opt ? t("menu.custom") : money(p.price * q)}</div>
+      </div>
+      <div class="ci-qty">
+        <button data-dec="${id}" aria-label="−">−</button>
+        <span>${q}</span>
+        <button data-inc="${id}" aria-label="+">+</button>
+      </div>
+    </div>`;
+  }).join("");
+
+  const sub = subtotal(), tax = sub * TAX;
+  $("#t-sub").textContent = money(sub);
+  $("#t-tax").textContent = money(tax);
+  $("#fee-row").hidden = mode === "pickup";
+  $("#t-fee").textContent = t("cart.free");
+  $("#t-total").textContent = money(sub + tax);
+  $("#cart-foot").hidden = false;
+  $$(".mode-toggle button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.mode === mode)));
+}
+
+function checkout(){
+  const lines = [...cart].map(([id,q]) => {
+    const p = PRODUCTS.find(x => x.id === id);
+    return `• ${q}× ${p.name}${p.opt ? " (" + t("menu.custom") + ")" : " — " + money(p.price * q)}`;
+  });
+  const sub = subtotal(), tax = sub * TAX;
+  const msg = [
+    t("waIntro"), "", ...lines, "",
+    `${t("waMode")}: ${mode === "delivery" ? t("cart.delivery") : t("cart.pickup")}`,
+    `${t("waTotal")}: ${money(sub + tax)}`
+  ].join("\n");
+  window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
+}
+
+/* ---- modal --------------------------------------------------------------*/
+function openModal(id){
+  const p = PRODUCTS.find(x => x.id === id);
+  if (!p) return;
+  modalItem = p; modalQty = 1;
+  lastFocus = document.activeElement;
+  $("#modal-img").src = p.img;
+  $("#modal-img").alt = p.name;
+  $("#modal-title").textContent = p.name;
+  $("#modal-desc").textContent = p[lang] || "";
+  $("#modal-desc").hidden = !p[lang];
+  $("#modal-opt").hidden = !p.opt;
+  $("#modal-opt").textContent = t("optNote");
+  $("#qty-val").textContent = "1";
+  updateModalBtn();
+  $("#modal").classList.add("on");
+  $("#overlay").classList.add("on");
+  document.body.classList.add("locked");
+  $("#modal-close").focus();
+}
+function updateModalBtn(){
+  const p = modalItem;
+  $("#modal-add").textContent = p.opt
+    ? `${t("add")} · ${t("menu.custom")}`
+    : `${t("add")} · ${money(p.price * modalQty)}`;
+}
+function closeAll(){
+  $("#modal").classList.remove("on");
+  $("#cart").classList.remove("on");
+  $("#overlay").classList.remove("on");
+  $("#mobile-nav").classList.remove("open");
+  $("#nav-toggle").setAttribute("aria-expanded","false");
+  document.body.classList.remove("locked");
+  if (lastFocus) { lastFocus.focus(); lastFocus = null; }
+}
+function openCart(){
+  lastFocus = document.activeElement;
+  $("#cart").classList.add("on");
+  $("#overlay").classList.add("on");
+  document.body.classList.add("locked");
+  $("#cart-close").focus();
+}
+
+/* ---- toasts -------------------------------------------------------------*/
+function toast(msg){
+  const el = document.createElement("div");
+  el.className = "toast";
+  el.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span></span>`;
+  el.querySelector("span").textContent = msg;
+  $("#toasts").appendChild(el);
+  setTimeout(() => el.remove(), 2600);
+}
+
+/* ---- reveal -------------------------------------------------------------*/
+let io;
+function observeReveals(){
+  io = io || new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); } });
+  }, { threshold:.1, rootMargin:"0px 0px -40px" });
+  $$(".reveal:not(.in)").forEach((el,i) => { el.style.transitionDelay = (i % 6) * 50 + "ms"; io.observe(el); });
+}
+
+/* ---- events -------------------------------------------------------------*/
+document.addEventListener("click", e => {
+  const open = e.target.closest("[data-open]");
+  if (open) return openModal(open.dataset.open);
+
+  const add = e.target.closest("[data-add]");
+  if (add){ addToCart(add.dataset.add); return; }
+
+  const chip = e.target.closest("[data-cat]");
+  if (chip){ activeCat = chip.dataset.cat; query = ""; $("#menu-search").value = ""; renderChips(); renderMenu(); return; }
+
+  const jump = e.target.closest("[data-jump]");
+  if (jump){ activeCat = jump.dataset.jump; renderChips(); renderMenu(); return; }
+
+  const dec = e.target.closest("[data-dec]");
+  if (dec){ setQty(dec.dataset.dec, cart.get(dec.dataset.dec) - 1); return; }
+  const inc = e.target.closest("[data-inc]");
+  if (inc){ setQty(inc.dataset.inc, cart.get(inc.dataset.inc) + 1); return; }
+
+  const langBtn = e.target.closest("[data-lang]");
+  if (langBtn){ lang = langBtn.dataset.lang; applyLang(); return; }
+
+  const modeBtn = e.target.closest("[data-mode]");
+  if (modeBtn){ mode = modeBtn.dataset.mode; renderCart(); return; }
+
+  const rail = e.target.closest("[data-rail]");
+  if (rail){
+    const r = $("#rail"), step = r.querySelector(".card").offsetWidth + 18;
+    r.scrollBy({ left: rail.dataset.rail === "next" ? step : -step, behavior:"smooth" });
+  }
+});
+
+$("#menu-search").addEventListener("input", e => { query = e.target.value; renderMenu(); });
+$("#cart-open").addEventListener("click", openCart);
+$("#bar-cart").addEventListener("click", openCart);
+$("#cart-close").addEventListener("click", closeAll);
+$("#modal-close").addEventListener("click", closeAll);
+$("#overlay").addEventListener("click", closeAll);
+$("#checkout").addEventListener("click", checkout);
+$("#qty-plus").addEventListener("click", () => { modalQty++; $("#qty-val").textContent = modalQty; updateModalBtn(); });
+$("#qty-minus").addEventListener("click", () => { if (modalQty > 1){ modalQty--; $("#qty-val").textContent = modalQty; updateModalBtn(); } });
+$("#modal-add").addEventListener("click", () => { addToCart(modalItem.id, modalQty); closeAll(); });
+
+$("#nav-toggle").addEventListener("click", () => {
+  $("#mobile-nav").classList.add("open");
+  $("#nav-toggle").setAttribute("aria-expanded","true");
+  document.body.classList.add("locked");
+});
+$("#nav-close").addEventListener("click", closeAll);
+$$(".mn-link").forEach(a => a.addEventListener("click", closeAll));
+
+$("#signup-form").addEventListener("submit", e => {
+  e.preventDefault();
+  e.target.reset();
+  toast(t("signup"));
+});
+
+addEventListener("keydown", e => { if (e.key === "Escape") closeAll(); });
+addEventListener("scroll", () => $("#nav").classList.toggle("shrunk", scrollY > 40), { passive:true });
+
+/* Keeps toasts and page padding clear of the sticky mobile bar */
+function syncBar(){
+  const bar = document.querySelector(".mobile-bar");
+  const h = getComputedStyle(bar).display === "none" ? 0 : bar.offsetHeight;
+  document.documentElement.style.setProperty("--bar-h", h + "px");
+}
+addEventListener("resize", syncBar);
+
+/* ---- boot ---------------------------------------------------------------*/
+applyLang();
+observeReveals();
+syncBar();
+setInterval(renderStatus, 60000);
+</script>
+</body>
+</html>
