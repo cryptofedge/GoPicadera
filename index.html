@@ -119,8 +119,32 @@ input,select{ font:inherit; }
 }
 .nav-inner{ display:flex; align-items:center; gap:24px; padding:12px 24px; max-width:var(--shell); margin-inline:auto; }
 .nav.shrunk .nav-inner{ padding-block:8px; }
-.nav-logo img{ height:52px; width:auto; transition:height .3s var(--ease); }
-.nav.shrunk .nav-logo img{ height:40px; }
+/* LOCKUP -------------------------------------------------------------------
+   The badge is a detailed circular mark: at 52px the wordmark inside it blurs
+   and the "DOMINICAN FOOD" arc renders about 3.6px tall, i.e. unreadable. So
+   the badge is used as an emblem and the name is set in type beside it, which
+   stays crisp at any size. The logo itself is untouched. */
+.nav-logo{ display:flex; align-items:center; gap:11px; }
+.nav-logo img{ height:46px; width:auto; flex:none; transition:height .3s var(--ease); }
+.nav.shrunk .nav-logo img{ height:38px; }
+
+.lockup{ display:flex; flex-direction:column; line-height:1; }
+.lockup-name{
+  font-family:var(--font-display);
+  font-variation-settings:'wdth' 112,'wght' 900;
+  font-size:1.22rem; text-transform:uppercase; letter-spacing:-.005em;
+  color:var(--text); white-space:nowrap;
+}
+.lockup-name em{ font-style:normal; color:var(--ember); }
+.lockup-sub{
+  font-size:.55rem; font-weight:600; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--yellow); margin-top:5px; white-space:nowrap;
+}
+@media (max-width:560px){
+  .lockup-sub{ display:none; }
+  .lockup-name{ font-size:1.05rem; }
+  .nav-logo{ gap:9px; }
+}
 
 .nav-links{ display:flex; gap:28px; margin-left:auto; }
 .nav-links a{ font-size:.9rem; font-weight:600; color:var(--muted); position:relative; padding-block:4px; transition:color .2s; }
@@ -526,7 +550,8 @@ input,select{ font:inherit; }
 .footer ul{ list-style:none; margin:0; padding:0; display:grid; gap:10px; }
 .footer li a,.footer li span{ color:var(--muted); font-size:.9rem; transition:color .2s; }
 .footer li a:hover{ color:var(--yellow); }
-.footer-logo img{ height:62px; width:auto; margin-bottom:16px; }
+.footer-logo{ display:flex; align-items:center; gap:13px; margin-bottom:16px; }
+.footer-logo img{ height:58px; width:auto; flex:none; }
 .footer-blurb{ color:var(--faint); font-size:.88rem; max-width:34ch; margin:0 0 20px; }
 .socials{ display:flex; gap:10px; }
 .footer-bottom{ border-top:1px solid var(--line); padding:20px 0 32px; display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap; font-size:.82rem; color:var(--faint); }
@@ -571,7 +596,13 @@ input,select{ font:inherit; }
 <!-- ========================== NAV ========================== -->
 <header class="nav" id="nav">
   <div class="nav-inner">
-    <a href="#top" class="nav-logo" aria-label="Go Picadera"><img src="assets/logo.png" alt="Go Picadera"></a>
+    <a href="#top" class="nav-logo" aria-label="Go Picadera — inicio">
+      <img src="assets/logo.png" alt="">
+      <span class="lockup">
+        <span class="lockup-name"><em>Go</em>Picadera</span>
+        <span class="lockup-sub">Dominican Food · Brooklyn</span>
+      </span>
+    </a>
 
     <nav class="nav-links" aria-label="Principal">
       <a href="#menu" data-i18n="nav.menu">Menú</a>
@@ -805,7 +836,13 @@ input,select{ font:inherit; }
   <div class="shell">
     <div class="footer-grid">
       <div>
-        <div class="footer-logo"><img src="assets/logo.png" alt="Go Picadera"></div>
+        <div class="footer-logo">
+          <img src="assets/logo.png" alt="">
+          <span class="lockup">
+            <span class="lockup-name" style="font-size:1.5rem"><em>Go</em>Picadera</span>
+            <span class="lockup-sub">Dominican Food · Brooklyn</span>
+          </span>
+        </div>
         <p class="footer-blurb" data-i18n="foot.blurb">Comida rápida dominicana en el corazón de Sunset Park. Sabor de RD, flow de BK.</p>
         <div class="socials">
           <a class="icon-btn" href="https://www.instagram.com/gopicadera/" target="_blank" rel="noopener" aria-label="Instagram"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
