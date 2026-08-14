@@ -1,0 +1,5 @@
+# Design preview, not the live restaurant site.
+# Kept out of search so it cannot compete with gopicadera.com.
+# Delete this file when the design ships to the real domain.
+User-agent: *
+Disallow: /
