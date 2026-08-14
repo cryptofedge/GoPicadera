@@ -798,6 +798,58 @@ input,select{ font:inherit; }
 .again-items{ font-size:.82rem; color:var(--muted); margin-top:2px; }
 
 /* ==========================================================================
+   CHECKOUT UPSELL
+   ========================================================================== */
+.upsell{ border-top:1px solid var(--line); padding-top:14px; }
+.upsell-title{ font-size:.8rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--faint); margin:0 0 10px; }
+.upsell-row{ display:flex; gap:9px; overflow-x:auto; scrollbar-width:none; padding-bottom:2px; }
+.upsell-row::-webkit-scrollbar{ display:none; }
+.up{
+  flex:none; width:96px; background:var(--surface-2); border:1px solid var(--line);
+  border-radius:13px; overflow:hidden; text-align:left; transition:border-color .2s, transform .2s var(--ease);
+}
+.up:hover{ border-color:var(--line-warm); transform:translateY(-2px); }
+.up img{ width:100%; aspect-ratio:1; object-fit:cover; }
+.up-b{ padding:7px 8px 8px; }
+.up-n{ font-size:.72rem; font-weight:600; line-height:1.25; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; min-height:2.5em; }
+.up-p{ font-size:.8rem; font-weight:700; color:var(--yellow); margin-top:3px; font-variant-numeric:tabular-nums; }
+
+/* ==========================================================================
+   LOYALTY STAMP CARD
+   ========================================================================== */
+.stamps{
+  background:linear-gradient(150deg,var(--surface-2),var(--surface));
+  border:1px solid var(--line-warm); border-radius:var(--radius);
+  padding:20px; margin-bottom:24px;
+}
+.stamps-head{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:14px; }
+.stamps-head h3{
+  font-family:var(--font-display); font-variation-settings:'wdth' 110,'wght' 800;
+  font-size:1.05rem; text-transform:uppercase; margin:0;
+}
+.stamps-count{ font-size:.85rem; font-weight:700; color:var(--yellow); font-variant-numeric:tabular-nums; }
+.stamps-grid{ display:grid; grid-template-columns:repeat(10,1fr); gap:7px; }
+.stamp{
+  aspect-ratio:1; border-radius:50%; border:1.5px dashed var(--line);
+  display:grid; place-items:center; color:transparent; font-size:.8rem;
+  transition:background .3s var(--ease), border-color .3s, color .3s, transform .3s var(--ease);
+}
+.stamp.on{
+  background:linear-gradient(150deg,var(--yellow),var(--ember));
+  border:1.5px solid transparent; color:#0A0B0E;
+}
+.stamp.pop{ transform:scale(1.22); }
+.stamps-foot{ font-size:.8rem; color:var(--muted); margin:13px 0 0; }
+.stamps.ready{ border-color:var(--yellow); box-shadow:0 0 0 1px var(--yellow) inset; }
+.stamps.ready .stamps-foot{ color:var(--yellow); font-weight:600; }
+@media (max-width:560px){
+  .stamps-grid{ grid-template-columns:repeat(5,1fr); gap:9px; }
+  .stamps{ padding:16px; }
+}
+.cart-stamp{ font-size:.78rem; color:var(--faint); text-align:center; margin:0; }
+.cart-stamp b{ color:var(--yellow); }
+
+/* ==========================================================================
    CATERING QUOTE FORM
    ========================================================================== */
 .quote-grid-form{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px; }
@@ -1060,6 +1112,18 @@ input,select{ font:inherit; }
       <div class="signup-copy">
         <span class="tag" data-i18n="promo.tag">Promoción</span>
         <h2 class="display" data-i18n="promo.title">¿Quieres<br>comida gratis?</h2>
+
+        <!-- Loyalty card. Demo persists in localStorage; real accounts need a
+             backend. TODO: client confirms the reward and the stamp count. -->
+        <div class="stamps" id="stamps">
+          <div class="stamps-head">
+            <h3 data-i18n="loy.title">Tu tarjeta de sellos</h3>
+            <span class="stamps-count" id="stamps-count"></span>
+          </div>
+          <div class="stamps-grid" id="stamps-grid"></div>
+          <p class="stamps-foot" id="stamps-foot"></p>
+        </div>
+
         <p data-i18n="promo.body">Regístrate y recibe promociones, platos nuevos y beneficios que no publicamos en ningún otro lado.</p>
         <form class="signup-form" id="signup-form">
           <label class="sr-only" for="email">Correo electrónico</label>
@@ -1156,6 +1220,13 @@ input,select{ font:inherit; }
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
       <div><strong id="closed-title"></strong><span id="closed-body"></span></div>
     </div>
+
+    <!-- Suggests sides and drinks not already in the cart. Attach-rate upsell
+         at the moment of purchase is one of the few reliable revenue lifts. -->
+    <div class="upsell" id="upsell" hidden>
+      <p class="upsell-title" data-i18n="up.title">Completa tu pedido</p>
+      <div class="upsell-row" id="upsell-row"></div>
+    </div>
     <div class="mode-toggle" role="group" aria-label="Entrega o recogida">
       <button data-mode="delivery" aria-pressed="true" data-i18n="cart.delivery">Entrega</button>
       <button data-mode="pickup" aria-pressed="false" data-i18n="cart.pickup">Recoger</button>
@@ -1167,6 +1238,7 @@ input,select{ font:inherit; }
       <div class="grand"><span data-i18n="cart.total">Total</span><span id="t-total">$0.00</span></div>
     </div>
     <button class="btn btn-primary btn-block" id="checkout" data-i18n="cart.checkout">Enviar pedido por WhatsApp</button>
+    <p class="cart-stamp" id="cart-stamp"></p>
     <p class="cart-note" data-i18n="cart.note">Te confirmamos por WhatsApp antes de cocinar.</p>
   </div>
 </aside>
@@ -1390,7 +1462,16 @@ const I18N = {
     "quote.date":"Fecha","quote.people":"Personas","quote.type":"Ocasión","quote.name":"Tu nombre",
     "quote.notes":"¿Qué te gustaría?","quote.send":"Enviar por WhatsApp",
     "quote.wa":"¡Hola Go Picadera! Quiero cotizar catering:","quote.for":"Para","quote.on":"Fecha","quote.guests":"Personas","quote.who":"Nombre",
-    "install":"Instalar la app"
+    "install":"Instalar la app",
+    "up.title":"Completa tu pedido",
+    "loy.title":"Tu tarjeta de sellos","loy.count":"{n} de {m}",
+    "loy.progress":"Te faltan {n} pedidos para tu plato gratis.",
+    "loy.one":"¡Te falta 1 pedido para tu plato gratis!",
+    "loy.ready":"¡Tienes un plato gratis! Lo aplicamos en tu próximo pedido.",
+    "loy.cart":"Sello <b>{n}/{m}</b> — un pedido más te acerca al plato gratis.",
+    "loy.cartReady":"🎉 <b>Plato gratis desbloqueado</b> — lo incluimos en este pedido.",
+    "loy.wa":"TENGO UN PLATO GRATIS (tarjeta de sellos completa)",
+    "loy.earned":"¡Sello ganado!"
   },
   en:{
     "topbar":"Free delivery in Brooklyn · Open daily from 11:00 AM",
@@ -1424,7 +1505,16 @@ const I18N = {
     "quote.date":"Date","quote.people":"Guests","quote.type":"Occasion","quote.name":"Your name",
     "quote.notes":"What would you like?","quote.send":"Send on WhatsApp",
     "quote.wa":"Hi Go Picadera! I'd like a catering quote:","quote.for":"For","quote.on":"Date","quote.guests":"Guests","quote.who":"Name",
-    "install":"Install the app"
+    "install":"Install the app",
+    "up.title":"Complete your order",
+    "loy.title":"Your stamp card","loy.count":"{n} of {m}",
+    "loy.progress":"{n} more orders until your free dish.",
+    "loy.one":"1 more order until your free dish!",
+    "loy.ready":"You've got a free dish! We'll apply it to your next order.",
+    "loy.cart":"Stamp <b>{n}/{m}</b> — one more order gets you the free dish.",
+    "loy.cartReady":"🎉 <b>Free dish unlocked</b> — we'll include it in this order.",
+    "loy.wa":"I HAVE A FREE DISH (stamp card complete)",
+    "loy.earned":"Stamp earned!"
   }
 };
 
@@ -1475,7 +1565,7 @@ function applyLang(){
   $("#menu-search").placeholder = t("menu.search");
   store.set("gp-lang", lang);
   renderChips(); renderDiet(); renderMenu(); renderRail(); renderCart();
-  renderHours(); renderStatus(); renderFooterCats(); renderAgain();
+  renderHours(); renderStatus(); renderFooterCats(); renderAgain(); renderStamps();
 }
 
 /* ---- open / closed ------------------------------------------------------*/
@@ -1576,6 +1666,68 @@ function tagsHTML(p){
   if (!p.tags || !p.tags.length) return "";
   return `<div class="tags">` + p.tags.map(k =>
     `<span class="tag-pill ${k}">${t("diet."+k)}</span>`).join("") + `</div>`;
+}
+
+/* ---- checkout upsell ----------------------------------------------------
+   Suggests low-friction add-ons (sides, then juices, then drinks) that aren't
+   already in the cart. Sorted by price so the order is stable across renders
+   rather than reshuffling under the customer's thumb. */
+const UPSELL_CATS = ["sides", "jugos", "bebidas"];
+function suggestions(){
+  const inCart = new Set(cart.keys());
+  // Two per category rather than filling up on sides — a side plus a drink
+  // attaches better than five kinds of fried starch.
+  return UPSELL_CATS.flatMap(c =>
+    PRODUCTS.filter(p => p.cat === c && !p.opt && !inCart.has(p.id))
+            .sort((a, b) => a.price - b.price)
+            .slice(0, 2)
+  );
+}
+function renderUpsell(){
+  const list = suggestions();
+  const wrap = $("#upsell");
+  if (!cart.size || !list.length){ wrap.hidden = true; return; }
+  wrap.hidden = false;
+  $("#upsell-row").innerHTML = list.map(p => `
+    <button class="up" data-add="${p.id}" aria-label="${t("add")} ${p.name}">
+      <img src="${p.img}" alt="" loading="lazy">
+      <span class="up-b">
+        <span class="up-n">${p.name}</span>
+        <span class="up-p">${money(p.price)}</span>
+      </span>
+    </button>`).join("");
+}
+
+/* ---- loyalty ------------------------------------------------------------
+   Demo-grade: stamps live in localStorage, so they're per-device and a
+   customer could clear them. Real loyalty needs accounts server-side -- this
+   exists to prove the mechanic to the client. */
+const STAMP_GOAL = 10;
+const getStamps = () => Math.max(0, parseInt(store.get("gp-stamps") || "0", 10) || 0);
+function renderStamps(pop){
+  const n = getStamps(), ready = n >= STAMP_GOAL;
+  const grid = $("#stamps-grid");
+  if (grid){
+    grid.innerHTML = Array.from({length: STAMP_GOAL}, (_, i) =>
+      `<span class="stamp ${i < n ? "on" : ""} ${pop && i === n-1 ? "pop" : ""}">★</span>`).join("");
+    $("#stamps-count").textContent = t("loy.count").replace("{n}", Math.min(n, STAMP_GOAL)).replace("{m}", STAMP_GOAL);
+    $("#stamps").classList.toggle("ready", ready);
+    const left = STAMP_GOAL - n;
+    $("#stamps-foot").textContent = ready ? t("loy.ready")
+      : left === 1 ? t("loy.one")
+      : t("loy.progress").replace("{n}", left);
+    if (pop) setTimeout(() => $$(".stamp.pop").forEach(s => s.classList.remove("pop")), 380);
+  }
+  const cs = $("#cart-stamp");
+  if (cs) cs.innerHTML = ready
+    ? t("loy.cartReady")
+    : t("loy.cart").replace("{n}", n).replace("{m}", STAMP_GOAL);
+}
+function earnStamp(){
+  const n = getStamps();
+  // A completed order while the card is full redeems it and starts over.
+  store.set("gp-stamps", String(n >= STAMP_GOAL ? 1 : n + 1));
+  renderStamps(true);
 }
 
 /* ---- order again --------------------------------------------------------*/
@@ -1679,6 +1831,9 @@ function renderCart(){
   $("#t-total").textContent = money(sub + tax);
   $("#cart-foot").hidden = false;
 
+  renderUpsell();
+  renderStamps();
+
   // Closed-state: don't let an order vanish into a shut kitchen unannounced.
   const st = statusNow();
   $("#closed-notice").hidden = st.open;
@@ -1700,12 +1855,15 @@ function checkout(){
     t("waIntro"), "", ...lines, "",
     `${t("waMode")}: ${mode === "delivery" ? t("cart.delivery") : t("cart.pickup")}`,
     `${t("waTotal")}: ${money(sub + tax)}`,
+    ...(getStamps() >= STAMP_GOAL ? ["", t("loy.wa")] : []),
     ...(st.open ? [] : ["", t("closed.wa").replace("{t}", fmtTime(st.next))])
   ].join("\n");
 
   // Remember it so the customer can reorder in one tap next time.
   store.set("gp-last", JSON.stringify([...cart]));
   renderAgain();
+  earnStamp();
+  toast(t("loy.earned"));
 
   window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
 }
