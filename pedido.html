@@ -248,8 +248,14 @@ function render(){
 
   const itemsHtml = items.map(it => {
     const photo = photoFor(it.name);
-    const opts = Array.isArray(it.options) && it.options.length
-      ? `<div class="item-opts">${it.options.join(" · ")}</div>` : "";
+    // Two writers, two shapes: the bot writes options as plain strings, the
+    // website writes them as {label} objects (selLabels() in index.html).
+    // Read either without caring which wrote this particular order.
+    const optionLabels = Array.isArray(it.options)
+      ? it.options.map(o => typeof o === "string" ? o : (o && o.label) || "").filter(Boolean)
+      : [];
+    const opts = optionLabels.length
+      ? `<div class="item-opts">${optionLabels.map(escapeHtml).join(" · ")}</div>` : "";
     const img = photo
       ? `<img class="item-photo" src="${photo}" alt="" loading="lazy">`
       : `<div class="item-photo"></div>`;
