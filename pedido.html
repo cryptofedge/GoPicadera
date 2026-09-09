@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tu pedido — Go Picadera</title>
+<meta name="robots" content="noindex, nofollow">
+<!--
+  One order, and only the one whose code AND phone number match. There is no
+  list here and there never should be one -- this page exists because the
+  bot already knows both, not because a code alone should ever be enough.
+  See get_order_by_code() in admin/backend/whatsapp_orders.sql for the other
+  half of this design.
+
+  The phone half of the link lives in the URL fragment (#tel=...), never in
+  the query string. A fragment is never sent in the HTTP request that loads
+  this page -- not to this server, not in a Referer header to anyone else --
+  so it is the one place a phone number can ride in a URL without leaving a
+  trace anywhere but the customer's own browser.
+-->
+<style>
+:root{
+  --ink:#0A0B0E; --surface:#131519; --surface-2:#1B1E25; --surface-3:#242832;
+  --line:rgba(255,255,255,.09); --line-warm:rgba(255,196,0,.22);
+  --yellow:#FFC400; --yellow-dim:#C79800;
+  --ember:#FF6A1A; --ember-deep:#E8410B;
+  --green:#3FD07A; --red:#FF5A5A;
+  --text:#F6F4EF; --muted:#9C9EA8; --faint:#6A6C76;
+  --radius:18px; --radius-lg:26px; --shell:640px;
+  --ease:cubic-bezier(.22,.61,.36,1);
+  --font-display:'Archivo','Arial Black',sans-serif;
+  --font-body:'Inter',system-ui,-apple-system,sans-serif;
+}
+*,*::before,*::after{ box-sizing:border-box; }
+body{
+  margin:0; background:var(--ink); color:var(--text);
+  font-family:var(--font-body); font-size:16px; line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  min-height:100dvh;
+}
+a{ color:inherit; }
+.shell{ max-width:var(--shell); margin:0 auto; padding:28px 20px 60px; }
+.top{ display:flex; align-items:center; justify-content:space-between; margin-bottom:28px; }
+.brand{ display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-weight:900; letter-spacing:-.01em; }
+.brand img{ width:34px; height:34px; border-radius:9px; }
+.lang-toggle{ display:flex; border:1px solid var(--line); border-radius:100px; overflow:hidden; }
+.lang-toggle button{
+  font:inherit; background:none; border:0; color:var(--faint); padding:6px 13px;
+  font-size:.78rem; font-weight:700; cursor:pointer;
+}
+.lang-toggle button.on{ background:var(--yellow); color:#0A0B0E; }
+
+.card{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-lg);
+  padding:24px; margin-bottom:16px;
+}
+.state{ text-align:center; padding:60px 20px; color:var(--muted); }
+.state h1{ font-family:var(--font-display); color:var(--text); font-size:1.3rem; margin:0 0 8px; }
+
+.ticket-code{ font-family:var(--font-display); font-size:1.6rem; font-weight:900; letter-spacing:-.01em; }
+.status-pill{
+  display:inline-flex; align-items:center; gap:6px; padding:5px 13px; border-radius:100px;
+  font-size:.74rem; font-weight:800; text-transform:uppercase; letter-spacing:.03em; margin-top:8px;
+}
+.status-dot{ width:7px; height:7px; border-radius:50%; }
+
+.item-row{ display:flex; gap:13px; padding:13px 0; border-top:1px solid var(--line); }
+.item-row:first-of-type{ border-top:0; }
+.item-photo{
+  width:56px; height:56px; border-radius:12px; object-fit:cover; flex:none;
+  background:var(--surface-3);
+}
+.item-info{ flex:1; min-width:0; }
+.item-name{ font-weight:700; font-size:.94rem; }
+.item-opts{ color:var(--muted); font-size:.8rem; margin-top:2px; }
+.item-price{ font-weight:700; font-size:.9rem; white-space:nowrap; }
+
+.totals{ margin-top:6px; padding-top:14px; border-top:1px solid var(--line); }
+.totals-row{ display:flex; justify-content:space-between; font-size:.88rem; color:var(--muted); padding:3px 0; }
+.totals-row.total{ color:var(--text); font-weight:800; font-size:1.15rem; padding-top:8px; }
+
+.note-box{ font-size:.82rem; color:var(--muted); background:var(--surface-2); border-radius:12px; padding:11px 14px; margin-top:14px; }
+
+.pay-section h2{ font-family:var(--font-display); font-size:1.05rem; margin:0 0 10px; }
+.pay-note{ font-size:.86rem; color:var(--muted); line-height:1.6; }
+.pay-note strong{ color:var(--text); }
+
+.mode-row{ display:flex; align-items:center; gap:8px; font-size:.88rem; color:var(--muted); margin-top:4px; }
+
+.faint-link{ display:block; text-align:center; margin-top:18px; font-size:.82rem; color:var(--faint); }
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="top">
+    <div class="brand">
+      <img src="assets/logo.png" alt="Go Picadera" onerror="this.style.display='none'">
+      <span>Go Picadera</span>
+    </div>
+    <div class="lang-toggle" id="langToggle">
+      <button data-lang="es">ES</button>
+      <button data-lang="en">EN</button>
+    </div>
+  </div>
+
+  <div id="app">
+    <div class="state" id="loading">
+      <h1 data-i18n="loading.title">Buscando tu pedido…</h1>
+      <p data-i18n="loading.body">Un momento.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================================
+   Same public, insert-safe key the storefront and the bot already use — it
+   can read this one RPC and nothing else. RLS on `orders` has no select
+   policy for anon at all; get_order_by_code() is the only door, and it only
+   opens for a code+phone pair that both match one real order.
+   ============================================================================ */
+const SUPA_URL = "https://kfuamhhfthfmavxppagb.supabase.co";
+const SUPA_KEY = "sb_publishable_3fcJxym4ZcYqIVpAvu645Q_-dmnagRD";
+
+const T = {
+  es: {
+    "loading.title": "Buscando tu pedido…",
+    "loading.body": "Un momento.",
+    "notfound.title": "No encontramos ese pedido",
+    "notfound.body": "Revisa el enlace que te mandamos por WhatsApp, o escríbenos y te ayudamos.",
+    "error.title": "No pudimos cargar tu pedido",
+    "error.body": "Intenta de nuevo en un momento, o escríbenos por WhatsApp.",
+    "status.new": "Recibido", "status.cooking": "En cocina", "status.ready": "Listo",
+    "status.done": "Entregado", "status.cancelled": "Cancelado",
+    "mode.pickup": "Para recoger", "mode.delivery": "Delivery",
+    "totals.subtotal": "Subtotal", "totals.tax": "Impuesto", "totals.total": "Total",
+    "pay.title": "Pago",
+    "pay.body_unpaid": "Por ahora el pago se cobra <strong>al recoger o al recibir tu pedido</strong>, como siempre. Pronto vas a poder pagar aquí mismo.",
+    "pay.body_paid": "Este pedido ya está pagado. ✅",
+    "whatsapp": "¿Alguna pregunta? Escríbenos por WhatsApp",
+  },
+  en: {
+    "loading.title": "Finding your order…",
+    "loading.body": "One moment.",
+    "notfound.title": "We couldn't find that order",
+    "notfound.body": "Check the link we sent you on WhatsApp, or message us and we'll help.",
+    "error.title": "We couldn't load your order",
+    "error.body": "Try again in a moment, or message us on WhatsApp.",
+    "status.new": "Received", "status.cooking": "Cooking", "status.ready": "Ready",
+    "status.done": "Delivered", "status.cancelled": "Cancelled",
+    "mode.pickup": "Pickup", "mode.delivery": "Delivery",
+    "totals.subtotal": "Subtotal", "totals.tax": "Tax", "totals.total": "Total",
+    "pay.title": "Payment",
+    "pay.body_unpaid": "For now, payment is collected <strong>on pickup or delivery</strong>, same as always. Paying right here is coming soon.",
+    "pay.body_paid": "This order is already paid. ✅",
+    "whatsapp": "Questions? Message us on WhatsApp",
+  },
+};
+
+let lang = (navigator.language || "es").toLowerCase().startsWith("en") ? "en" : "es";
+function t(key){ return (T[lang] && T[lang][key]) || (T.es[key] || key); }
+
+function syncToggle(){
+  document.querySelectorAll("#langToggle button").forEach(
+    b => b.classList.toggle("on", b.dataset.lang === lang)
+  );
+}
+syncToggle();
+
+document.getElementById("langToggle").addEventListener("click", (e) => {
+  const btn = e.target.closest("button[data-lang]");
+  if (!btn) return;
+  lang = btn.dataset.lang;
+  syncToggle();
+  render();
+});
+
+/* Matched by name against the same dish photos the storefront already
+   serves — self-hosted, per the note in index.html about not depending on
+   a Supabase project outside their own control for images. */
+const PHOTO_BY_NAME = {
+  "Empanadas": "assets/dishes/empanadas.jpg",
+  "Tres Golpes": "assets/dishes/tresgolpes.jpg",
+  "Kipes": "assets/dishes/kipes.jpg",
+  "Picadera Personal": "assets/dishes/pic-personal.jpg",
+  "Picadera Small": "assets/dishes/pic-small.jpg",
+  "Picadera Medium": "assets/dishes/pic-medium.jpg",
+  "Picadera Large": "assets/dishes/pic-large.jpg",
+  "Picadera Party Size": "assets/dishes/pic-party.jpg",
+  "Mofongo Tradicional": "assets/dishes/mofongo.jpg",
+  "Mofonguitos": "assets/dishes/mofonguito.jpg",
+  "Dominican Chimi": "assets/dishes/chimi.jpg",
+  "Dominican Tostada": "assets/dishes/tostada.jpg",
+  "Dominican Hot Dog": "assets/dishes/hotdog.jpg",
+};
+function photoFor(name){ return PHOTO_BY_NAME[name] || null; }
+
+const STATUS_COLOR = {
+  new: "var(--yellow)", cooking: "var(--ember)", ready: "var(--green)",
+  done: "var(--muted)", cancelled: "var(--red)",
+};
+
+function money(n){ return "$" + Number(n).toFixed(2); }
+
+function params(){
+  const q = new URLSearchParams(location.search);
+  const code = (q.get("code") || "").trim();
+  const hash = new URLSearchParams(location.hash.startsWith("#") ? location.hash.slice(1) : location.hash);
+  const tel = (hash.get("tel") || "").trim();
+  return { code, tel };
+}
+
+async function fetchOrder(code, tel){
+  const res = await fetch(`${SUPA_URL}/rest/v1/rpc/get_order_by_code`, {
+    method: "POST",
+    headers: {
+      apikey: SUPA_KEY,
+      Authorization: "Bearer " + SUPA_KEY,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ p_code: code, p_phone: tel }),
+  });
+  if (!res.ok) throw new Error("http " + res.status);
+  const data = await res.json();
+  return data; // null when code+phone don't match a real order
+}
+
+let lastState = { kind: "loading" };
+
+function render(){
+  const app = document.getElementById("app");
+
+  if (lastState.kind === "loading") {
+    app.innerHTML = `<div class="state"><h1>${t("loading.title")}</h1><p>${t("loading.body")}</p></div>`;
+    return;
+  }
+  if (lastState.kind === "notfound") {
+    app.innerHTML = `<div class="state"><h1>${t("notfound.title")}</h1><p>${t("notfound.body")}</p></div>${waLink()}`;
+    return;
+  }
+  if (lastState.kind === "error") {
+    app.innerHTML = `<div class="state"><h1>${t("error.title")}</h1><p>${t("error.body")}</p></div>${waLink()}`;
+    return;
+  }
+
+  const o = lastState.order;
+  const items = o.items || [];
+  const color = STATUS_COLOR[o.status] || "var(--muted)";
+
+  const itemsHtml = items.map(it => {
+    const photo = photoFor(it.name);
+    const opts = Array.isArray(it.options) && it.options.length
+      ? `<div class="item-opts">${it.options.join(" · ")}</div>` : "";
+    const img = photo
+      ? `<img class="item-photo" src="${photo}" alt="" loading="lazy">`
+      : `<div class="item-photo"></div>`;
+    return `
+      <div class="item-row">
+        ${img}
+        <div class="item-info">
+          <div class="item-name">${it.qty}× ${escapeHtml(it.name)}</div>
+          ${opts}
+        </div>
+        <div class="item-price">${money(it.unit_price * it.qty)}</div>
+      </div>`;
+  }).join("");
+
+  const payBody = o.payment === "paid" ? t("pay.body_paid") : t("pay.body_unpaid");
+
+  app.innerHTML = `
+    <div class="card">
+      <div class="ticket-code">${escapeHtml(o.code)}</div>
+      <div class="status-pill" style="background:color-mix(in srgb, ${color} 18%, transparent); color:${color}">
+        <span class="status-dot" style="background:${color}"></span>
+        ${t("status." + o.status)}
+      </div>
+      <div class="mode-row">${t("mode." + o.mode)}${o.customer_name ? " · " + escapeHtml(o.customer_name) : ""}</div>
+
+      <div style="margin-top:18px">${itemsHtml}</div>
+
+      <div class="totals">
+        <div class="totals-row"><span>${t("totals.subtotal")}</span><span>${money(o.subtotal)}</span></div>
+        <div class="totals-row"><span>${t("totals.tax")}</span><span>${money(o.tax)}</span></div>
+        <div class="totals-row total"><span>${t("totals.total")}</span><span>${money(o.total)}</span></div>
+      </div>
+
+      ${o.note ? `<div class="note-box">${escapeHtml(o.note)}</div>` : ""}
+    </div>
+
+    <div class="card pay-section">
+      <h2>${t("pay.title")}</h2>
+      <p class="pay-note">${payBody}</p>
+    </div>
+
+    ${waLink()}
+  `;
+}
+
+function waLink(){
+  return `<a class="faint-link" href="https://wa.me/19297058086" target="_blank" rel="noopener">${t("whatsapp")}</a>`;
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+(async function init(){
+  const { code, tel } = params();
+  if (!code || !tel) {
+    lastState = { kind: "notfound" };
+    render();
+    return;
+  }
+  try {
+    const order = await fetchOrder(code, tel);
+    lastState = order ? { kind: "ok", order } : { kind: "notfound" };
+  } catch (e) {
+    lastState = { kind: "error" };
+  }
+  render();
+})();
+</script>
+</body>
+</html>
