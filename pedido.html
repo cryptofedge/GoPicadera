@@ -136,6 +136,7 @@ const T = {
     "pay.title": "Pago",
     "pay.body_unpaid": "Por ahora el pago se cobra <strong>al recoger o al recibir tu pedido</strong>, como siempre. Pronto vas a poder pagar aquí mismo.",
     "pay.body_paid": "Este pedido ya está pagado. ✅",
+    "pay.confirming": "Confirmando tu pago… esto tarda unos segundos.",
     "whatsapp": "¿Alguna pregunta? Escríbenos por WhatsApp",
   },
   en: {
@@ -152,6 +153,7 @@ const T = {
     "pay.title": "Payment",
     "pay.body_unpaid": "For now, payment is collected <strong>on pickup or delivery</strong>, same as always. Paying right here is coming soon.",
     "pay.body_paid": "This order is already paid. ✅",
+    "pay.confirming": "Confirming your payment… this takes a few seconds.",
     "whatsapp": "Questions? Message us on WhatsApp",
   },
 };
@@ -270,7 +272,7 @@ function render(){
       </div>`;
   }).join("");
 
-  const payBody = o.payment === "paid" ? t("pay.body_paid") : t("pay.body_unpaid");
+  const payBody = o.payment === "paid" ? t("pay.body_paid") : (lastState.confirming ? t("pay.confirming") : t("pay.body_unpaid"));
 
   app.innerHTML = `
     <div class="card">
@@ -317,8 +319,20 @@ function escapeHtml(s){
     return;
   }
   try {
-    const order = await fetchOrder(code, tel);
+    let order = await fetchOrder(code, tel);
     lastState = order ? { kind: "ok", order } : { kind: "notfound" };
+    // Coming back from the card checkout (the return link carries paid=1): Stripe tells our server about the
+    // payment a moment after the customer lands here, so wait for it instead of saying "pay on pickup".
+    if (order && order.payment !== "paid" && new URLSearchParams(location.search).get("paid") === "1") {
+      lastState.confirming = true;
+      render();
+      for (let i = 0; i < 15 && order.payment !== "paid"; i++) {
+        await new Promise(r => setTimeout(r, 3000));
+        try { order = (await fetchOrder(code, tel)) || order; } catch (e) { /* keep waiting */ }
+        lastState = { kind: "ok", order, confirming: order.payment !== "paid" };
+      }
+      lastState.confirming = false;
+    }
   } catch (e) {
     lastState = { kind: "error" };
   }
